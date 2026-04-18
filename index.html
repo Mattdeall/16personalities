@@ -372,6 +372,60 @@
   .nav-link:hover { border-color: var(--accent); color: var(--text); }
   .nav-right { display: flex; align-items: center; gap: 0; }
 
+  /* HOME BUTTON in nav */
+  .nav-home {
+    background: none; border: 1px solid var(--border);
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; color: var(--muted); transition: all .2s;
+    margin-right: 8px; display: none;
+  }
+  .nav-home:hover { border-color: var(--accent); color: var(--text); }
+  .nav-home.visible { display: inline-block; }
+
+  /* EXIT WARNING DIALOG */
+  .exit-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(20,18,15,.55);
+    z-index: 300; align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .exit-overlay.open { display: flex; }
+  .exit-dialog {
+    background: var(--surface); border-radius: 16px;
+    max-width: 380px; width: 100%; padding: 2rem;
+    text-align: center;
+  }
+  .exit-dialog-icon { font-size: 2rem; margin-bottom: 1rem; line-height: 1; }
+  .exit-dialog h3 { font-family: 'DM Serif Display', serif; font-size: 1.35rem; margin-bottom: .6rem; }
+  .exit-dialog p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+  .exit-dialog-btns { display: flex; gap: 10px; }
+  .exit-btn-cancel {
+    flex: 1; background: none; border: 1.5px solid var(--border);
+    border-radius: 100px; padding: 11px 18px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--text); cursor: pointer; transition: all .2s;
+  }
+  .exit-btn-cancel:hover { border-color: var(--accent); }
+  .exit-btn-confirm {
+    flex: 1; background: #c05a5a; border: none;
+    border-radius: 100px; padding: 11px 18px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    font-weight: 500; color: #fff; cursor: pointer; transition: opacity .2s;
+  }
+  .exit-btn-confirm:hover { opacity: .82; }
+
+  /* inline home btn used on result/match pages */
+  .page-home-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: 1.5px solid var(--border);
+    border-radius: 100px; padding: 9px 20px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    color: var(--muted); cursor: pointer; transition: all .2s;
+    margin-bottom: 2.5rem;
+  }
+  .page-home-btn:hover { border-color: var(--accent); color: var(--text); }
+
   /* MATCH PAGE */
   .match-wrap { max-width: 780px; margin: 0 auto; padding: 3rem 2rem 6rem; }
   .match-hero { text-align: center; margin-bottom: 3rem; }
@@ -499,15 +553,29 @@
 <body>
 
 <nav>
-  <div class="nav-brand" data-tr="16 Kişilik Testi" data-en="16 Personality Test">16 Kişilik Testi</div>
+  <button class="nav-brand" onclick="navGoHome()" style="background:none;border:none;cursor:pointer;font-family:'DM Serif Display',serif;font-size:1.1rem;letter-spacing:-.01em" data-tr="16 Kişilik Testi" data-en="16 Personality Test">16 Kişilik Testi</button>
   <div class="nav-right">
-    <button class="nav-link" onclick="showPage('match')" data-tr="Uyumluluk" data-en="Compatibility">Uyumluluk</button>
+    <button class="nav-home" id="navHomeBtn" onclick="navGoHome()" data-tr="← Ana Sayfa" data-en="← Home">← Ana Sayfa</button>
+    <button class="nav-link" onclick="navGoMatch()" data-tr="Uyumluluk" data-en="Compatibility">Uyumluluk</button>
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('tr')">TR</button>
       <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
   </div>
 </nav>
+
+<!-- EXIT WARNING DIALOG -->
+<div class="exit-overlay" id="exitOverlay" onclick="if(event.target===this)closeExitDialog()">
+  <div class="exit-dialog">
+    <div class="exit-dialog-icon">⚠️</div>
+    <h3 id="exitTitle">Testi bırakmak istiyor musun?</h3>
+    <p id="exitMsg">İlerlemeniz kaydedilmeyecek. Çıkarsanız tüm cevaplarınız silinecek ve baştan başlamanız gerekecek.</p>
+    <div class="exit-dialog-btns">
+      <button class="exit-btn-cancel" id="exitCancel" onclick="closeExitDialog()">Devam Et</button>
+      <button class="exit-btn-confirm" id="exitConfirm" onclick="confirmExit()">Çık</button>
+    </div>
+  </div>
+</div>
 
 <!-- HOME PAGE -->
 <div id="page-home" class="page active">
@@ -607,6 +675,9 @@
 <!-- RESULT PAGE -->
 <div id="page-result" class="page">
   <div class="result-wrap">
+    <div style="margin-bottom:.5rem">
+      <button class="page-home-btn" onclick="showPage('home')" data-tr="← Ana Sayfa" data-en="← Home">← Ana Sayfa</button>
+    </div>
     <div class="result-hero">
       <div class="result-type-badge" id="resultBadge"></div>
       <h1 class="result-title" id="resultType"></h1>
@@ -644,6 +715,9 @@
 <!-- MATCH PAGE -->
 <div id="page-match" class="page">
   <div class="match-wrap">
+    <div style="margin-bottom:.5rem">
+      <button class="page-home-btn" onclick="showPage('home')" data-tr="← Ana Sayfa" data-en="← Home">← Ana Sayfa</button>
+    </div>
     <div class="match-hero">
       <p class="hero-eyebrow" data-tr="Kişilik Uyumluluğu" data-en="Personality Compatibility">Kişilik Uyumluluğu</p>
       <h1 data-tr="İki kişilik arasındaki<br>uyumu keşfet." data-en="Explore the chemistry<br>between two types.">İki kişilik arasındaki<br>uyumu keşfet.</h1>
@@ -1012,6 +1086,11 @@ function setLang(l) {
   document.querySelectorAll('[data-tr]').forEach(el => {
     el.innerHTML = el.getAttribute('data-' + l);
   });
+  // Sync nav home button text
+  const homeBtn = document.getElementById('navHomeBtn');
+  if (homeBtn.classList.contains('visible')) {
+    homeBtn.textContent = l === 'tr' ? '← Ana Sayfa' : '← Home';
+  }
   if (document.getElementById('page-test').classList.contains('active')) renderQ();
   if (document.getElementById('page-result').classList.contains('active') && resultType) buildResult(resultType);
   if (document.getElementById('matchResult').classList.contains('visible')) {
@@ -1025,6 +1104,60 @@ function setLang(l) {
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
+  // Show/hide nav home button
+  const homeBtn = document.getElementById('navHomeBtn');
+  if (id === 'home') {
+    homeBtn.classList.remove('visible');
+  } else {
+    homeBtn.classList.add('visible');
+    homeBtn.textContent = lang === 'tr' ? '← Ana Sayfa' : '← Home';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navGoHome() {
+  const testActive = document.getElementById('page-test').classList.contains('active');
+  if (testActive && answers.some(a => a !== null)) {
+    openExitDialog();
+  } else {
+    showPage('home');
+  }
+}
+
+function navGoMatch() {
+  const testActive = document.getElementById('page-test').classList.contains('active');
+  if (testActive && answers.some(a => a !== null)) {
+    openExitDialog('match');
+  } else {
+    showPage('match');
+  }
+}
+
+let exitDestination = 'home';
+function openExitDialog(dest) {
+  exitDestination = dest || 'home';
+  const dialog = document.getElementById('exitOverlay');
+  // Update text per lang
+  document.getElementById('exitTitle').textContent = lang === 'tr'
+    ? 'Testi bırakmak istiyor musun?'
+    : 'Leave the test?';
+  document.getElementById('exitMsg').textContent = lang === 'tr'
+    ? 'İlerlemeniz kaydedilmeyecek. Çıkarsanız tüm cevaplarınız silinecek ve baştan başlamanız gerekecek.'
+    : 'Your progress will not be saved. If you leave, all your answers will be lost and you will need to start over.';
+  document.getElementById('exitCancel').textContent = lang === 'tr' ? 'Devam Et' : 'Keep Going';
+  document.getElementById('exitConfirm').textContent = lang === 'tr' ? 'Çık' : 'Leave';
+  dialog.classList.add('open');
+}
+
+function closeExitDialog() {
+  document.getElementById('exitOverlay').classList.remove('open');
+}
+
+function confirmExit() {
+  closeExitDialog();
+  currentQ = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  showPage(exitDestination);
 }
 
 function startTest() {
