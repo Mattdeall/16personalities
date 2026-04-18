@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16 Kişilik Testi / 16 Personality Test</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --border: #e5e0d8;
+    --text: #1a1814;
+    --muted: #7a7570;
+    --accent: #2d2926;
+    --pill-bg: #ede9e2;
+    --progress-bg: #e5e0d8;
+
+    --E: #4a7c8a; --I: #7a6aaa;
+    --S: #7a9e5a; --N: #c07840;
+    --T: #5a6a8a; --F: #c05a7a;
+    --J: #6a8a6a; --P: #a07040;
+
+    --analyst: #9b6fb0;
+    --diplomat: #4e9e82;
+    --sentinel: #4a78a0;
+    --explorer: #d4882b;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 56px;
+  }
+  .nav-brand { font-family: 'DM Serif Display', serif; font-size: 1.1rem; letter-spacing: -0.01em; }
+  .lang-toggle { display: flex; gap: 4px; }
+  .lang-btn {
+    background: none; border: 1px solid var(--border);
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; color: var(--muted); transition: all .2s;
+  }
+  .lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    max-width: 680px; margin: 0 auto;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.15; margin-bottom: 1.2rem;
+    letter-spacing: -0.02em;
+  }
+  .hero p { color: var(--muted); font-size: 1.05rem; max-width: 480px; margin: 0 auto 2.5rem; }
+  .hero-meta { display: flex; justify-content: center; gap: 2rem; margin-bottom: 2.5rem; }
+  .hero-meta span { font-size: 13px; color: var(--muted); }
+  .hero-meta strong { display: block; font-size: 1.3rem; font-weight: 500; color: var(--text); }
+
+  .btn-primary {
+    display: inline-block; background: var(--accent);
+    color: #fff; padding: 14px 40px;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    border: none; cursor: pointer;
+    text-decoration: none; transition: opacity .2s;
+  }
+  .btn-primary:hover { opacity: .85; }
+  .btn-outline {
+    display: inline-block; background: transparent;
+    color: var(--accent); padding: 14px 40px;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    border: 1.5px solid var(--accent); cursor: pointer;
+    text-decoration: none; transition: all .2s; margin-left: 12px;
+  }
+  .btn-outline:hover { background: var(--accent); color: #fff; }
+
+  /* DIMENSIONS PREVIEW */
+  .dimensions {
+    max-width: 800px; margin: 0 auto 5rem;
+    padding: 0 2rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+  }
+  .dim-card h3 { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: .8rem; letter-spacing: .04em; text-transform: uppercase; }
+  .dim-pair { display: flex; align-items: center; gap: 10px; }
+  .dim-letter {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif; font-size: 1.3rem;
+    font-weight: bold;
+  }
+  .dim-vs { font-size: 12px; color: var(--muted); flex: 1; text-align: center; }
+  .dim-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* TEST PAGE */
+  .test-wrap {
+    max-width: 680px; margin: 0 auto;
+    padding: 2rem 2rem 5rem;
+  }
+  .progress-bar-wrap {
+    background: var(--progress-bg);
+    height: 3px; border-radius: 2px;
+    margin-bottom: 2.5rem; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; background: var(--accent);
+    border-radius: 2px; transition: width .4s ease;
+  }
+  .q-counter { font-size: 12px; color: var(--muted); margin-bottom: .5rem; }
+  .q-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem; line-height: 1.4;
+    margin-bottom: 2rem;
+  }
+  .options-grid {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .option-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 14px 18px;
+    text-align: left; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--text);
+    transition: all .2s; position: relative;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .option-btn:hover { border-color: var(--accent); background: var(--pill-bg); }
+  .option-btn.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .option-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .option-btn.selected .option-dot { background: rgba(255,255,255,.3); border-color: transparent; }
+  .option-btn.selected .option-dot::after {
+    content: ''; width: 8px; height: 8px;
+    border-radius: 50%; background: #fff;
+  }
+
+  .scale-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--muted);
+    margin-bottom: 8px; padding: 0 2px;
+  }
+  .scale-btns {
+    display: flex; gap: 8px; margin-bottom: 2rem;
+  }
+  .scale-btn {
+    flex: 1; aspect-ratio: 1;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--text); transition: all .2s;
+  }
+  .scale-btn:hover { border-color: var(--accent); }
+  .scale-btn.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .nav-btns { display: flex; gap: 10px; }
+  .btn-back {
+    background: none; border: 1.5px solid var(--border);
+    border-radius: 100px; padding: 10px 24px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--muted); transition: all .2s;
+  }
+  .btn-back:hover { border-color: var(--accent); color: var(--text); }
+  .btn-next {
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 100px; padding: 10px 28px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; transition: opacity .2s;
+    flex: 1;
+  }
+  .btn-next:disabled { opacity: .35; cursor: not-allowed; }
+  .btn-next:not(:disabled):hover { opacity: .85; }
+
+  /* RESULT PAGE */
+  .result-wrap {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .result-hero {
+    text-align: center; margin-bottom: 3rem;
+  }
+  .result-type-badge {
+    display: inline-flex; gap: 4px;
+    margin-bottom: 1.5rem;
+  }
+  .type-letter {
+    width: 56px; height: 56px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem; color: #fff;
+  }
+  .result-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: .5rem;
+  }
+  .result-nickname { font-size: 1.1rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .result-desc { max-width: 560px; margin: 0 auto; color: var(--muted); line-height: 1.7; }
+
+  /* SCORE BARS */
+  .score-section { margin-bottom: 3rem; }
+  .score-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem; margin-bottom: 1.2rem;
+  }
+  .score-bars { display: flex; flex-direction: column; gap: 16px; }
+  .score-row { display: flex; align-items: center; gap: 12px; }
+  .score-label { font-size: 13px; color: var(--muted); width: 70px; text-align: right; }
+  .score-bar-track {
+    flex: 1; height: 8px; background: var(--progress-bg);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .score-bar-fill {
+    position: absolute; top: 0; height: 100%;
+    border-radius: 4px; transition: width .8s ease;
+  }
+  .score-pct { font-size: 13px; font-weight: 500; width: 36px; }
+
+  /* PERSONALITY GRID */
+  .personality-section { margin-bottom: 3rem; }
+  .personality-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem; margin-bottom: .5rem;
+  }
+  .personality-section .sub { color: var(--muted); font-size: 14px; margin-bottom: 1.5rem; }
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  .type-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 1rem;
+    cursor: pointer; transition: all .2s;
+  }
+  .type-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .type-card.highlighted {
+    border-color: transparent;
+    box-shadow: 0 0 0 2.5px var(--accent);
+  }
+  .type-card-badge {
+    display: flex; gap: 3px; margin-bottom: .6rem;
+  }
+  .tl {
+    width: 22px; height: 22px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+  .type-card-name { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+  .type-card-nick { font-size: 12px; color: var(--muted); }
+  .type-card-group { font-size: 11px; margin-top: 6px; padding: 2px 7px; border-radius: 20px; display: inline-block; }
+
+  /* DETAIL MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(20,18,15,.5);
+    z-index: 200; align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: 16px; max-width: 560px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    padding: 2rem;
+  }
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
+  .modal-close {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.4rem; color: var(--muted); line-height: 1; padding: 4px;
+  }
+  .modal h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; }
+  .modal-badge { display: flex; gap: 4px; margin-bottom: .5rem; }
+  .trait-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1.2rem 0; }
+  .trait-card {
+    background: var(--bg);
+    border-radius: 8px; padding: .8rem 1rem;
+  }
+  .trait-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .trait-card .val { font-size: 14px; }
+
+  /* LETTER EXPLAINER */
+  .letters-section { margin-bottom: 3rem; }
+  .letters-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem; margin-bottom: 1.5rem;
+  }
+  .letter-rows { display: flex; flex-direction: column; gap: 16px; }
+  .letter-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem 1.4rem;
+  }
+  .letter-row-header { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+  .letter-pair { display: flex; gap: 10px; }
+  .letter-card {
+    flex: 1; border-radius: 8px; padding: .8rem 1rem;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .letter-big {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem; line-height: 1; flex-shrink: 0;
+  }
+  .letter-info h4 { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+  .letter-info p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* GROUPS */
+  .groups-section { margin-bottom: 3rem; }
+  .groups-section h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 1.5rem; }
+  .group-cards { display: flex; flex-direction: column; gap: 12px; }
+  .group-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem 1.4rem;
+  }
+  .group-name { font-weight: 500; font-size: 1rem; margin-bottom: 4px; }
+  .group-types { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .group-pill {
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+  }
+  .group-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* RETAKE BTN */
+  .retake-row { text-align: center; margin-top: 2rem; }
+
+  /* NAV LINK */
+  .nav-link {
+    background: none; border: 1px solid var(--border);
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; color: var(--muted); transition: all .2s;
+    margin-right: 8px;
+  }
+  .nav-link:hover { border-color: var(--accent); color: var(--text); }
+  .nav-right { display: flex; align-items: center; gap: 0; }
+
+  /* MATCH PAGE */
+  .match-wrap { max-width: 780px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+  .match-hero { text-align: center; margin-bottom: 3rem; }
+  .match-hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem,4vw,2.8rem); line-height: 1.2; margin-bottom: .6rem; letter-spacing: -.02em; }
+  .match-hero p { color: var(--muted); font-size: 1rem; max-width: 460px; margin: 0 auto; }
+
+  .selector-row {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    gap: 16px; align-items: center; margin-bottom: 2rem;
+  }
+  .selector-col { display: flex; flex-direction: column; gap: 10px; }
+  .selector-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; text-align: center; }
+  .type-select {
+    appearance: none;
+    background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 10px 36px 10px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--text); cursor: pointer; transition: border-color .2s;
+    width: 100%;
+  }
+  .type-select:focus { outline: none; border-color: var(--accent); }
+  .gender-row { display: flex; gap: 6px; justify-content: center; }
+  .gender-btn {
+    flex: 1; padding: 8px 6px; border: 1.5px solid var(--border);
+    border-radius: 8px; background: none; cursor: pointer;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--muted); transition: all .2s;
+  }
+  .gender-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .vs-badge {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem; color: var(--muted);
+    text-align: center; padding-top: 24px;
+  }
+  .match-btn {
+    display: block; width: 100%; background: var(--accent); color: #fff;
+    border: none; border-radius: 100px; padding: 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: opacity .2s; margin-bottom: 2.5rem;
+  }
+  .match-btn:hover { opacity: .85; }
+
+  /* MATCH RESULT */
+  .match-result { display: none; }
+  .match-result.visible { display: block; }
+
+  .compat-header {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.8rem 2rem; margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .compat-pair { display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 1rem; }
+  .compat-person { text-align: center; }
+  .compat-type-badge { display: flex; gap: 3px; justify-content: center; margin-bottom: 4px; }
+  .compat-name { font-size: 13px; color: var(--muted); }
+  .compat-heart { font-size: 1.4rem; }
+  .compat-score-wrap { margin: 0 auto; max-width: 280px; }
+  .compat-score-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .compat-score-bar { height: 10px; background: var(--progress-bg); border-radius: 5px; overflow: hidden; }
+  .compat-score-fill { height: 100%; border-radius: 5px; transition: width 1s ease; }
+  .compat-score-pct { font-family: 'DM Serif Display', serif; font-size: 2.2rem; margin-bottom: 4px; }
+  .compat-tagline { font-size: 14px; color: var(--muted); font-style: italic; }
+
+  /* ASPECT CARDS */
+  .aspects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+  .aspect-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem 1.3rem;
+  }
+  .aspect-icon { font-size: 1.3rem; margin-bottom: 6px; }
+  .aspect-name { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+  .aspect-stars { display: flex; gap: 3px; margin-bottom: 8px; }
+  .star { width: 12px; height: 12px; border-radius: 2px; }
+  .star.on { background: var(--accent); }
+  .star.off { background: var(--progress-bg); }
+  .aspect-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .strengths-weaknesses {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem;
+  }
+  .sw-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.3rem; }
+  .sw-card h4 { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
+  .sw-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .sw-list li { font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: flex-start; line-height: 1.4; }
+  .sw-list li::before { content: ''; flex-shrink: 0; margin-top: 5px; }
+  .sw-list.pros li::before { width: 6px; height: 6px; border-radius: 50%; background: #7a9e5a; }
+  .sw-list.cons li::before { width: 6px; height: 6px; border-radius: 50%; background: #c05a7a; }
+
+  .advice-card {
+    background: var(--pill-bg); border-radius: 12px;
+    padding: 1.4rem 1.6rem; margin-bottom: 2rem;
+    border-left: 3px solid var(--accent);
+  }
+  .advice-card h4 { font-size: 13px; font-weight: 500; margin-bottom: .6rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .advice-card p { font-size: 14px; line-height: 1.7; }
+
+  .loading-match {
+    text-align: center; padding: 3rem 1rem;
+    display: none;
+  }
+  .loading-match.visible { display: block; }
+  .loading-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 1rem; }
+  .loading-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); animation: pulse 1.2s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: .2s; }
+  .loading-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes pulse { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+
+  @media (max-width: 520px) {
+    .dimensions { grid-template-columns: 1fr; }
+    .type-grid { grid-template-columns: 1fr 1fr; }
+    .trait-grid { grid-template-columns: 1fr; }
+    .letter-pair { flex-direction: column; }
+    .hero-meta { gap: 1rem; }
+    .selector-row { grid-template-columns: 1fr; }
+    .vs-badge { padding-top: 0; }
+    .aspects-grid { grid-template-columns: 1fr; }
+    .strengths-weaknesses { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand" data-tr="16 Kişilik Testi" data-en="16 Personality Test">16 Kişilik Testi</div>
+  <div class="nav-right">
+    <button class="nav-link" onclick="showPage('match')" data-tr="Uyumluluk" data-en="Compatibility">Uyumluluk</button>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('tr')">TR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <p class="hero-eyebrow" data-tr="Myers–Briggs Kişilik Envanteri" data-en="Myers–Briggs Personality Inventory">Myers–Briggs Kişilik Envanteri</p>
+    <h1 data-tr="Kendi kişiliğini<br>keşfet." data-en="Discover your<br>personality type.">Kendi kişiliğini<br>keşfet.</h1>
+    <p data-tr="60 sorudan oluşan bu test, 4 boyuttaki tercihlerini ölçerek 16 kişilik tipinden hangisi olduğunu ortaya çıkarır." data-en="This 60-question test measures your preferences across 4 dimensions to reveal which of the 16 personality types you are.">60 sorudan oluşan bu test, 4 boyuttaki tercihlerini ölçerek 16 kişilik tipinden hangisi olduğunu ortaya çıkarır.</p>
+    <div class="hero-meta">
+      <span><strong>60</strong> <span data-tr="Soru" data-en="Questions">Soru</span></span>
+      <span><strong>~10</strong> <span data-tr="Dakika" data-en="Minutes">Dakika</span></span>
+      <span><strong>16</strong> <span data-tr="Sonuç" data-en="Results">Sonuç</span></span>
+    </div>
+    <button class="btn-primary" onclick="startTest()" data-tr="Teste Başla" data-en="Start Test">Teste Başla</button>
+    <a href="#" class="btn-outline" onclick="showAllTypes(); return false;" data-tr="Tüm Tipleri Gör" data-en="View All Types">Tüm Tipleri Gör</a>
+  </div>
+
+  <div class="dimensions">
+    <div class="dim-card">
+      <h3 data-tr="Enerji Yönelimi" data-en="Energy Orientation">Enerji Yönelimi</h3>
+      <div class="dim-pair">
+        <div>
+          <div class="dim-letter" style="background:#e8f0f2;color:#4a7c8a">E</div>
+          <div class="dim-desc" data-tr="Dışadönük" data-en="Extraverted">Dışadönük</div>
+        </div>
+        <div class="dim-vs" data-tr="karşısında" data-en="vs">karşısında</div>
+        <div>
+          <div class="dim-letter" style="background:#ede8f4;color:#7a6aaa">I</div>
+          <div class="dim-desc" data-tr="İçedönük" data-en="Introverted">İçedönük</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-card">
+      <h3 data-tr="Bilgi İşleme" data-en="Information Processing">Bilgi İşleme</h3>
+      <div class="dim-pair">
+        <div>
+          <div class="dim-letter" style="background:#eef2e8;color:#7a9e5a">S</div>
+          <div class="dim-desc" data-tr="Duyusal" data-en="Sensing">Duyusal</div>
+        </div>
+        <div class="dim-vs" data-tr="karşısında" data-en="vs">karşısında</div>
+        <div>
+          <div class="dim-letter" style="background:#f4ede8;color:#c07840">N</div>
+          <div class="dim-desc" data-tr="Sezgisel" data-en="iNtuitive">Sezgisel</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-card">
+      <h3 data-tr="Karar Verme" data-en="Decision Making">Karar Verme</h3>
+      <div class="dim-pair">
+        <div>
+          <div class="dim-letter" style="background:#e8ecf2;color:#5a6a8a">T</div>
+          <div class="dim-desc" data-tr="Düşünen" data-en="Thinking">Düşünen</div>
+        </div>
+        <div class="dim-vs" data-tr="karşısında" data-en="vs">karşısında</div>
+        <div>
+          <div class="dim-letter" style="background:#f2e8ed;color:#c05a7a">F</div>
+          <div class="dim-desc" data-tr="Hisseden" data-en="Feeling">Hisseden</div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-card">
+      <h3 data-tr="Yaşam Tarzı" data-en="Lifestyle">Yaşam Tarzı</h3>
+      <div class="dim-pair">
+        <div>
+          <div class="dim-letter" style="background:#e8f2e8;color:#6a8a6a">J</div>
+          <div class="dim-desc" data-tr="Yargılayan" data-en="Judging">Yargılayan</div>
+        </div>
+        <div class="dim-vs" data-tr="karşısında" data-en="vs">karşısında</div>
+        <div>
+          <div class="dim-letter" style="background:#f2ede8;color:#a07040">P</div>
+          <div class="dim-desc" data-tr="Algılayan" data-en="Perceiving">Algılayan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEST PAGE -->
+<div id="page-test" class="page">
+  <div class="test-wrap">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="q-counter" id="qCounter">1 / 60</div>
+    <div class="q-text" id="qText"></div>
+    <div class="scale-label">
+      <span id="labelA"></span>
+      <span id="labelB"></span>
+    </div>
+    <div class="scale-btns" id="scaleBtns"></div>
+    <div class="nav-btns">
+      <button class="btn-back" id="btnBack" onclick="prevQ()">←</button>
+      <button class="btn-next" id="btnNext" onclick="nextQ()" disabled data-tr="İleri" data-en="Next">İleri</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT PAGE -->
+<div id="page-result" class="page">
+  <div class="result-wrap">
+    <div class="result-hero">
+      <div class="result-type-badge" id="resultBadge"></div>
+      <h1 class="result-title" id="resultType"></h1>
+      <p class="result-nickname" id="resultNickname"></p>
+      <p class="result-desc" id="resultDesc"></p>
+    </div>
+
+    <div class="score-section">
+      <h2 data-tr="Boyut Skorları" data-en="Dimension Scores">Boyut Skorları</h2>
+      <div class="score-bars" id="scoreBars"></div>
+    </div>
+
+    <div class="letters-section">
+      <h2 data-tr="Harfler Ne Anlama Gelir?" data-en="What Do the Letters Mean?">Harfler Ne Anlama Gelir?</h2>
+      <div class="letter-rows" id="letterRows"></div>
+    </div>
+
+    <div class="groups-section">
+      <h2 data-tr="4 Büyük Grup" data-en="The 4 Groups">4 Büyük Grup</h2>
+      <div class="group-cards" id="groupCards"></div>
+    </div>
+
+    <div class="personality-section">
+      <h2 data-tr="Tüm 16 Kişilik Tipi" data-en="All 16 Personality Types">Tüm 16 Kişilik Tipi</h2>
+      <p class="sub" data-tr="Detay görmek için bir karta tıkla." data-en="Click a card to see details.">Detay görmek için bir karta tıkla.</p>
+      <div class="type-grid" id="typeGrid"></div>
+    </div>
+
+    <div class="retake-row">
+      <button class="btn-primary" onclick="retakeTest()" data-tr="Testi Yeniden Yap" data-en="Retake Test">Testi Yeniden Yap</button>
+    </div>
+  </div>
+</div>
+
+<!-- MATCH PAGE -->
+<div id="page-match" class="page">
+  <div class="match-wrap">
+    <div class="match-hero">
+      <p class="hero-eyebrow" data-tr="Kişilik Uyumluluğu" data-en="Personality Compatibility">Kişilik Uyumluluğu</p>
+      <h1 data-tr="İki kişilik arasındaki<br>uyumu keşfet." data-en="Explore the chemistry<br>between two types.">İki kişilik arasındaki<br>uyumu keşfet.</h1>
+      <p data-tr="Romantizm, çocuk yetiştirme, cinsellik, finans ve daha fazlasında nasıl örtüştüklerini gör." data-en="See how they align in romance, parenting, intimacy, finances, and more.">Romantizm, çocuk yetiştirme, cinsellik, finans ve daha fazlasında nasıl örtüştüklerini gör.</p>
+    </div>
+
+    <div class="selector-row">
+      <div class="selector-col">
+        <div class="selector-label" data-tr="Birinci Kişi" data-en="First Person">Birinci Kişi</div>
+        <select class="type-select" id="typeA">
+          <option value="INTJ">INTJ – Mimar / Architect</option>
+          <option value="INTP">INTP – Mantıkçı / Logician</option>
+          <option value="ENTJ">ENTJ – Komutan / Commander</option>
+          <option value="ENTP">ENTP – Tartışmacı / Debater</option>
+          <option value="INFJ">INFJ – Savunucu / Advocate</option>
+          <option value="INFP">INFP – Arabulucu / Mediator</option>
+          <option value="ENFJ">ENFJ – Protagonis / Protagonist</option>
+          <option value="ENFP">ENFP – Kampanyacı / Campaigner</option>
+          <option value="ISTJ">ISTJ – Lojistikçi / Logistician</option>
+          <option value="ISFJ">ISFJ – Koruyucu / Defender</option>
+          <option value="ESTJ">ESTJ – Yönetici / Executive</option>
+          <option value="ESFJ">ESFJ – Konsolos / Consul</option>
+          <option value="ISTP">ISTP – Virtüöz / Virtuoso</option>
+          <option value="ISFP">ISFP – Maceracı / Adventurer</option>
+          <option value="ESTP">ESTP – Girişimci / Entrepreneur</option>
+          <option value="ESFP">ESFP – Eğlendirici / Entertainer</option>
+        </select>
+        <div class="gender-row">
+          <button class="gender-btn active" id="genderA-m" onclick="setGender('A','m')" data-tr="Erkek" data-en="Male">Erkek</button>
+          <button class="gender-btn" id="genderA-f" onclick="setGender('A','f')" data-tr="Kadın" data-en="Female">Kadın</button>
+          <button class="gender-btn" id="genderA-n" onclick="setGender('A','n')" data-tr="Belirtme" data-en="Unspecified">Belirtme</button>
+        </div>
+      </div>
+      <div class="vs-badge">×</div>
+      <div class="selector-col">
+        <div class="selector-label" data-tr="İkinci Kişi" data-en="Second Person">İkinci Kişi</div>
+        <select class="type-select" id="typeB">
+          <option value="INTJ">INTJ – Mimar / Architect</option>
+          <option value="INTP">INTP – Mantıkçı / Logician</option>
+          <option value="ENTJ" selected>ENTJ – Komutan / Commander</option>
+          <option value="ENTP">ENTP – Tartışmacı / Debater</option>
+          <option value="INFJ">INFJ – Savunucu / Advocate</option>
+          <option value="INFP">INFP – Arabulucu / Mediator</option>
+          <option value="ENFJ">ENFJ – Protagonis / Protagonist</option>
+          <option value="ENFP">ENFP – Kampanyacı / Campaigner</option>
+          <option value="ISTJ">ISTJ – Lojistikçi / Logistician</option>
+          <option value="ISFJ">ISFJ – Koruyucu / Defender</option>
+          <option value="ESTJ">ESTJ – Yönetici / Executive</option>
+          <option value="ESFJ">ESFJ – Konsolos / Consul</option>
+          <option value="ISTP">ISTP – Virtüöz / Virtuoso</option>
+          <option value="ISFP">ISFP – Maceracı / Adventurer</option>
+          <option value="ESTP">ESTP – Girişimci / Entrepreneur</option>
+          <option value="ESFP">ESFP – Eğlendirici / Entertainer</option>
+        </select>
+        <div class="gender-row">
+          <button class="gender-btn" id="genderB-m" onclick="setGender('B','m')" data-tr="Erkek" data-en="Male">Erkek</button>
+          <button class="gender-btn active" id="genderB-f" onclick="setGender('B','f')" data-tr="Kadın" data-en="Female">Kadın</button>
+          <button class="gender-btn" id="genderB-n" onclick="setGender('B','n')" data-tr="Belirtme" data-en="Unspecified">Belirtme</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="match-btn" onclick="analyzeMatch()" data-tr="Uyumu Analiz Et" data-en="Analyze Compatibility">Uyumu Analiz Et</button>
+
+    <div class="loading-match" id="loadingMatch">
+      <div class="loading-dots">
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+      </div>
+      <p style="font-size:14px;color:var(--muted)" data-tr="Analiz ediliyor..." data-en="Analyzing...">Analiz ediliyor...</p>
+    </div>
+
+    <div class="match-result" id="matchResult">
+      <div class="compat-header">
+        <div class="compat-pair">
+          <div class="compat-person">
+            <div class="compat-type-badge" id="compatBadgeA"></div>
+            <div class="compat-name" id="compatNameA"></div>
+          </div>
+          <div class="compat-heart">♥</div>
+          <div class="compat-person">
+            <div class="compat-type-badge" id="compatBadgeB"></div>
+            <div class="compat-name" id="compatNameB"></div>
+          </div>
+        </div>
+        <div class="compat-score-wrap">
+          <div class="compat-score-pct" id="compatPct"></div>
+          <div class="compat-score-bar"><div class="compat-score-fill" id="compatBar"></div></div>
+          <div style="height:8px"></div>
+          <div class="compat-tagline" id="compatTagline"></div>
+        </div>
+      </div>
+
+      <div class="aspects-grid" id="aspectsGrid"></div>
+
+      <div class="strengths-weaknesses">
+        <div class="sw-card">
+          <h4 data-tr="Bu İlişkinin Güçlü Yönleri" data-en="Relationship Strengths">Bu İlişkinin Güçlü Yönleri</h4>
+          <ul class="sw-list pros" id="prosList"></ul>
+        </div>
+        <div class="sw-card">
+          <h4 data-tr="Olası Sürtüşme Noktaları" data-en="Potential Friction Points">Olası Sürtüşme Noktaları</h4>
+          <ul class="sw-list cons" id="consList"></ul>
+        </div>
+      </div>
+
+      <div class="advice-card">
+        <h4 data-tr="Bu Çift İçin Tavsiye" data-en="Advice for This Pair">Bu Çift İçin Tavsiye</h4>
+        <p id="adviceText"></p>
+      </div>
+
+      <div style="text-align:center">
+        <button class="btn-outline" onclick="showPage('home')" data-tr="← Ana Sayfa" data-en="← Home">← Ana Sayfa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div>
+        <div class="modal-badge" id="modalBadge"></div>
+        <h2 id="modalTitle"></h2>
+        <p style="color:var(--muted);font-size:14px" id="modalNick"></p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <p id="modalDesc" style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:1rem"></p>
+    <div class="trait-grid" id="modalTraits"></div>
+    <div id="modalExtra"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+
+const TYPES = {
+  INTJ: {
+    tr: { name: "Mimar", desc: "Stratejik düşünürler; hayal gücü ve güvenilirlik birleşimi. Planlar yapar ve her şeyi öngörmeye çalışır. Bağımsız, kararlı ve yüksek standartlara sahiptir.", strengths: "Stratejik, Bağımsız, Kararlı, Yaratıcı", weaknesses: "Sosyal açıdan sert, Aşırı eleştirel, Katı", careers: "Bilim, Mühendislik, Hukuk, Strateji", famous: "Nikola Tesla, Isaac Newton, Elon Musk" },
+    en: { name: "Architect", desc: "Strategic thinkers with a blend of imagination and reliability. They plan ahead and try to anticipate everything. Independent, determined, and holds high standards.", strengths: "Strategic, Independent, Decisive, Creative", weaknesses: "Socially distant, Overly critical, Rigid", careers: "Science, Engineering, Law, Strategy", famous: "Nikola Tesla, Isaac Newton, Elon Musk" },
+    group: "analyst", colors: ["#7a5aaa","#7a5aaa","#5a6a8a","#6a8a6a"]
+  },
+  INTP: {
+    tr: { name: "Mantıkçı", desc: "Yenilikçi mucitler; bilgiye ve fikir üretimine büyük değer verir. Dünyayı anlamak için yorulmadan analiz eder. Teorileri seven, meraklı bireyler.", strengths: "Analitik, Yaratıcı, Mantıklı, Nesnel", weaknesses: "Dağınık, İkinci planda kalmayı sever, Sosyal değil", careers: "Matematik, Felsefe, Yazılım, Araştırma", famous: "Albert Einstein, Charles Darwin, Bill Gates" },
+    en: { name: "Logician", desc: "Innovative inventors who prize knowledge and idea generation. They tirelessly analyze the world to understand it. Curious individuals who love theories.", strengths: "Analytical, Creative, Logical, Objective", weaknesses: "Disorganized, Prefers background, Antisocial", careers: "Math, Philosophy, Software, Research", famous: "Albert Einstein, Charles Darwin, Bill Gates" },
+    group: "analyst", colors: ["#7a5aaa","#5aaa7a","#5a6a8a","#a07040"]
+  },
+  ENTJ: {
+    tr: { name: "Komutan", desc: "Cesur, hayal gücü kuvvetli ve güçlü liderler. Her engeli çözülmesi gereken bir sorun olarak görür. Doğal yöneticiler; irade ve zeka sahibi.", strengths: "Liderlik, Stratejik, Karizmatik, Güçlü irade", weaknesses: "Tahakküm edici, Sabırsız, Soğuk", careers: "Yöneticilik, Hukuk, Girişimcilik, Politika", famous: "Steve Jobs, Napoleon Bonaparte, Gordon Ramsay" },
+    en: { name: "Commander", desc: "Bold, imaginative and strong-willed leaders. They see every obstacle as a problem to be solved. Natural executives with willpower and intellect.", strengths: "Leadership, Strategic, Charismatic, Strong-willed", weaknesses: "Domineering, Impatient, Cold", careers: "Management, Law, Entrepreneurship, Politics", famous: "Steve Jobs, Napoleon Bonaparte, Gordon Ramsay" },
+    group: "analyst", colors: ["#4a7c8a","#5aaa7a","#5a6a8a","#6a8a6a"]
+  },
+  ENTP: {
+    tr: { name: "Tartışmacı", desc: "Zeki ve meraklı düşünürler; entellektüel meydan okumadan zevk alır. Kural koyarken değil, kuralları sorgulamakta uzmanlaşmış bireyler.", strengths: "Hızlı düşünen, Yaratıcı, Karizmatik, Enerjik", weaknesses: "Tartışmacı, Odaksız, Sabırsız", careers: "Hukuk, Girişimcilik, Yaratıcı sektörler", famous: "Mark Twain, Thomas Edison, Sacha Baron Cohen" },
+    en: { name: "Debater", desc: "Smart and curious thinkers who enjoy intellectual challenges. Specialists at questioning rules rather than making them.", strengths: "Quick-witted, Creative, Charismatic, Energetic", weaknesses: "Argumentative, Unfocused, Impatient", careers: "Law, Entrepreneurship, Creative Industries", famous: "Mark Twain, Thomas Edison, Sacha Baron Cohen" },
+    group: "analyst", colors: ["#4a7c8a","#5aaa7a","#5a6a8a","#a07040"]
+  },
+  INFJ: {
+    tr: { name: "Savunucu", desc: "Sakin ve mistik; ilham verici insanlar. Dürüstlüğü ve özgünlüğü seven, kendi değerlerine sıkı sıkıya bağlı kişiler. Dünyayı daha iyi bir yer yapma misyonu.", strengths: "Anlayışlı, İlkeli, Tutarlı, Yaratıcı", weaknesses: "Mükemmeliyetçi, Özel, Tükenmişliğe meyilli", careers: "Danışmanlık, Sanat, Yazarlık, Psikoloji", famous: "Nelson Mandela, Martin Luther King, Lady Gaga" },
+    en: { name: "Advocate", desc: "Quiet and mystical, yet inspiring individuals. They love honesty and authenticity, firmly adhering to their own values. On a mission to make the world better.", strengths: "Insightful, Principled, Consistent, Creative", weaknesses: "Perfectionist, Private, Burn-out prone", careers: "Counseling, Art, Writing, Psychology", famous: "Nelson Mandela, Martin Luther King, Lady Gaga" },
+    group: "diplomat", colors: ["#7a5aaa","#5aaa7a","#c05a7a","#6a8a6a"]
+  },
+  INFP: {
+    tr: { name: "Arabulucu", desc: "Şiirsel, nazik ve özgecil kişilik. Her zaman iyi olanı arar. Güçlü değerlere sahip ve hayal gücü zengin bireyler.", strengths: "Empatik, Yaratıcı, Sadık, Açık fikirli", weaknesses: "Pratik değil, Eleştiriye karşı hassas, İzole", careers: "Yazarlık, Sanat, Sosyal hizmet, Müzik", famous: "J.R.R. Tolkien, William Shakespeare, Björk" },
+    en: { name: "Mediator", desc: "Poetic, kind and altruistic personalities. Always looking for the good. Individuals with strong values and rich imagination.", strengths: "Empathetic, Creative, Loyal, Open-minded", weaknesses: "Impractical, Sensitive to criticism, Isolative", careers: "Writing, Art, Social Work, Music", famous: "J.R.R. Tolkien, William Shakespeare, Björk" },
+    group: "diplomat", colors: ["#7a5aaa","#5aaa7a","#c05a7a","#a07040"]
+  },
+  ENFJ: {
+    tr: { name: "Protagonis", desc: "Karizmatik ve ilham verici liderler; dinleyicilerini büyüler. İnsanları motive etme konusunda doğal bir yetenek taşır.", strengths: "Karizmatik, Özgeci, Güvenilir, Sabırlı", weaknesses: "Aşırı idealist, Kendi ihtiyaçlarını göz ardı eder", careers: "Eğitim, Politika, Koçluk, İletişim", famous: "Barack Obama, Oprah Winfrey, Martin Luther King" },
+    en: { name: "Protagonist", desc: "Charismatic and inspiring leaders who captivate their audiences. Have a natural talent for motivating people.", strengths: "Charismatic, Altruistic, Reliable, Patient", weaknesses: "Overly idealistic, Neglects own needs", careers: "Education, Politics, Coaching, Communication", famous: "Barack Obama, Oprah Winfrey, Martin Luther King" },
+    group: "diplomat", colors: ["#4a7c8a","#5aaa7a","#c05a7a","#6a8a6a"]
+  },
+  ENFP: {
+    tr: { name: "Kampanyacı", desc: "Hevesli, yaratıcı ve sosyal özgür ruhlar. Hayatın hem büyük hem de küçük jestlerini takdir eden meraklı bireyler.", strengths: "Meraklı, Enerjik, Optimist, Yaratıcı", weaknesses: "Konsantrasyonu dağılabilir, Aşırı duygusal, Strese yatkın", careers: "Sanat, Medya, Koçluk, Pazarlama", famous: "Robin Williams, Walt Disney, Quentin Tarantino" },
+    en: { name: "Campaigner", desc: "Enthusiastic, creative and sociable free spirits. Curious individuals who appreciate both the grand and subtle gestures in life.", strengths: "Curious, Energetic, Optimistic, Creative", weaknesses: "Easily distracted, Overly emotional, Stress-prone", careers: "Art, Media, Coaching, Marketing", famous: "Robin Williams, Walt Disney, Quentin Tarantino" },
+    group: "diplomat", colors: ["#4a7c8a","#5aaa7a","#c05a7a","#a07040"]
+  },
+  ISTJ: {
+    tr: { name: "Lojistikçi", desc: "Güvenilir ve pratik bireylerin prototipi. Dürüstlüğe ve sadakate büyük değer verir. Sorumluluk ve düzen onlar için temeldir.", strengths: "Dürüst, Kararlı, Düzenli, Sabırlı", weaknesses: "Katı, Değişime dirençli, Yargılayıcı", careers: "Hukuk, Muhasebe, Askerlik, Yönetim", famous: "George Washington, Angela Merkel, Jeff Bezos" },
+    en: { name: "Logistician", desc: "The prototype of reliable and practical individuals. Places great value on honesty and loyalty. Responsibility and order are fundamental to them.", strengths: "Honest, Decisive, Organized, Patient", weaknesses: "Rigid, Resistant to change, Judgmental", careers: "Law, Accounting, Military, Management", famous: "George Washington, Angela Merkel, Jeff Bezos" },
+    group: "sentinel", colors: ["#7a5aaa","#6aaa5a","#5a6a8a","#6a8a6a"]
+  },
+  ISFJ: {
+    tr: { name: "Savunucu", desc: "Çok özel ve sıcak koruyucular; yakın çevrelerine her şeyi vermeye hazır. Detaylara dikkat eder ve bakımı sever.", strengths: "Destekleyici, Güvenilir, Sabırlı, İmgelem güçlü", weaknesses: "Fazla mütevazı, Değişime dirençli, Sınırları zayıf", careers: "Sağlık, Sosyal hizmet, Öğretmenlik, İdare", famous: "Kraliçe Elizabeth II, Beyoncé, Kate Middleton" },
+    en: { name: "Defender", desc: "Very dedicated and warm protectors, ready to give everything for their loved ones. Attentive to detail and caring.", strengths: "Supportive, Reliable, Patient, Imaginative", weaknesses: "Too modest, Resistant to change, Weak boundaries", careers: "Healthcare, Social Work, Teaching, Administration", famous: "Queen Elizabeth II, Beyoncé, Kate Middleton" },
+    group: "sentinel", colors: ["#7a5aaa","#6aaa5a","#c05a7a","#6a8a6a"]
+  },
+  ESTJ: {
+    tr: { name: "Yönetici", desc: "Geleneklerden ve düzenden zevk alan mükemmel yöneticiler. Insanları ve organizasyonları bir arada tutma konusunda iyidir.", strengths: "Kararlı, Güvenilir, Örgütsel, Dürüst", weaknesses: "İnatçı, Sosyal statü odaklı, Duygusal değil", careers: "Yöneticilik, Hukuk, Politika, Finans", famous: "Sonia Sotomayor, Frank Sinatra, Lyndon B. Johnson" },
+    en: { name: "Executive", desc: "Excellent administrators who enjoy tradition and order. Good at keeping people and organizations together.", strengths: "Decisive, Reliable, Organizational, Honest", weaknesses: "Stubborn, Status-focused, Unemotional", careers: "Management, Law, Politics, Finance", famous: "Sonia Sotomayor, Frank Sinatra, Lyndon B. Johnson" },
+    group: "sentinel", colors: ["#4a7c8a","#6aaa5a","#5a6a8a","#6a8a6a"]
+  },
+  ESFJ: {
+    tr: { name: "Konsolos", desc: "Son derece özenli, sosyal ve popüler. İnsanlara yardım etmekte becerikli. Toplulukları bir arada tutan tutkulu bireyler.", strengths: "Güçlü pratik beceriler, Güvenilir, Sadık, İyi gözlemci", weaknesses: "Eleştiriye hassas, Onay ihtiyacı, Esnek değil", careers: "Sağlık, Eğitim, Sosyal hizmet, Perakende", famous: "Taylor Swift, Bill Clinton, Jennifer Garner" },
+    en: { name: "Consul", desc: "Extraordinarily caring, social and popular. Skilled at helping people. Passionate individuals who hold communities together.", strengths: "Strong practical skills, Reliable, Loyal, Good observer", weaknesses: "Sensitive to criticism, Needs approval, Inflexible", careers: "Healthcare, Education, Social Work, Retail", famous: "Taylor Swift, Bill Clinton, Jennifer Garner" },
+    group: "sentinel", colors: ["#4a7c8a","#6aaa5a","#c05a7a","#6a8a6a"]
+  },
+  ISTP: {
+    tr: { name: "Virtüöz", desc: "Cesur ve pratik deneyimciler. Her tür alet ve makineye karşı büyük merak duyar. Sakin ve analitik; ellerini kullanmayı sever.", strengths: "İyimser, Enerji dolu, Yaratıcı, Pratik", weaknesses: "Özel, Bazen kayıtsız, Uzun vadeli planlara ilgi yok", careers: "Mühendislik, Teknisyenlik, Pilot, Sporcu", famous: "Clint Eastwood, Michael Jordan, Bruce Lee" },
+    en: { name: "Virtuoso", desc: "Bold and practical experimenters. Have great curiosity for all kinds of tools and machines. Calm and analytical; love using their hands.", strengths: "Optimistic, Energetic, Creative, Practical", weaknesses: "Private, Sometimes indifferent, Disinterested in long-term plans", careers: "Engineering, Technical Work, Piloting, Sports", famous: "Clint Eastwood, Michael Jordan, Bruce Lee" },
+    group: "explorer", colors: ["#7a5aaa","#6aaa5a","#5a6a8a","#a07040"]
+  },
+  ISFP: {
+    tr: { name: "Maceracı", desc: "Esnek ve cazip sanatçılar. Her zaman sınırları yeniden keşfeder. Hayatı tutkuyla yaşar ve çevresine güzellik katar.", strengths: "Cazip, Sanatsal, Meraklı, Tutkulu", weaknesses: "Çatışmadan kaçar, Öngörülemeyen, Strese duyarlı", careers: "Sanat, Müzik, Tasarım, Mutfak sanatları", famous: "Michael Jackson, Lana Del Rey, David Bowie" },
+    en: { name: "Adventurer", desc: "Flexible and charming artists. Always rediscovering boundaries. Lives life with passion and adds beauty to their surroundings.", strengths: "Charming, Artistic, Curious, Passionate", weaknesses: "Avoids conflict, Unpredictable, Stress-sensitive", careers: "Art, Music, Design, Culinary Arts", famous: "Michael Jackson, Lana Del Rey, David Bowie" },
+    group: "explorer", colors: ["#7a5aaa","#6aaa5a","#c05a7a","#a07040"]
+  },
+  ESTP: {
+    tr: { name: "Girişimci", desc: "Zeki, enerjik ve algısal bireyler. Risk almaktan korkmaz; anlık çözümler bulur. Yaşamı dolu dolu yaşar.", strengths: "Cesaretli, Rasyonel, Doğrudan, Algısal", weaknesses: "Sabırsız, Risk odaklı, Yapıyı göz ardı eder", careers: "Girişimcilik, Satış, Pazarlama, Acil tıp", famous: "Donald Trump, Madonna, Ernest Hemingway" },
+    en: { name: "Entrepreneur", desc: "Smart, energetic and perceptive individuals. Not afraid to take risks; finds instant solutions. Lives life to the fullest.", strengths: "Bold, Rational, Direct, Perceptive", weaknesses: "Impatient, Risk-focused, Ignores structure", careers: "Entrepreneurship, Sales, Marketing, Emergency Medicine", famous: "Donald Trump, Madonna, Ernest Hemingway" },
+    group: "explorer", colors: ["#4a7c8a","#6aaa5a","#5a6a8a","#a07040"]
+  },
+  ESFP: {
+    tr: { name: "Eğlendirici", desc: "Kendiliğinden, enerjik ve hevesli. Hayat onlar için büyük bir sahnedir. İnsanlara neşe katar; anı yaşar.", strengths: "Cesur, Özgün, Estetik sahibi, Gösteriş", weaknesses: "Odaklanma güçlüğü, Uzun vadeli plan yapmaz, Çatışmadan kaçar", careers: "Eğlence, Sanat, Turizm, Eğitim", famous: "Marilyn Monroe, Adele, Elvis Presley" },
+    en: { name: "Entertainer", desc: "Spontaneous, energetic and enthusiastic. Life is a big stage for them. Brings joy to people; lives in the moment.", strengths: "Bold, Original, Aesthetic sense, Showmanship", weaknesses: "Focus difficulties, Doesn't plan long-term, Avoids conflict", careers: "Entertainment, Art, Tourism, Education", famous: "Marilyn Monroe, Adele, Elvis Presley" },
+    group: "explorer", colors: ["#4a7c8a","#6aaa5a","#c05a7a","#a07040"]
+  }
+};
+
+const GROUPS = {
+  analyst: {
+    tr: { name: "Analistler", desc: "Rasyonel ve tarafsız. Sorunları mantık ve yaratıcılıkla çözmeye çalışır. Bilgi ve yetkinlik onlar için birincil değerdir.", types: ["INTJ","INTP","ENTJ","ENTP"] },
+    en: { name: "Analysts", desc: "Rational and impartial. Attempt to solve problems with logic and creativity. Knowledge and competence are their primary values.", types: ["INTJ","INTP","ENTJ","ENTP"] },
+    color: "#9b6fb0"
+  },
+  diplomat: {
+    tr: { name: "Diplomatlar", desc: "Empatik ve ilkeli. İnsanlarla uyum içinde yaşar, dünyayı daha iyi yapmak için çalışır. Bağlantı ve işbirliği önceliklidir.", types: ["INFJ","INFP","ENFJ","ENFP"] },
+    en: { name: "Diplomats", desc: "Empathetic and principled. Live in harmony with people, work to make the world better. Connection and cooperation are priorities.", types: ["INFJ","INFP","ENFJ","ENFP"] },
+    color: "#4e9e82"
+  },
+  sentinel: {
+    tr: { name: "Nöbetçiler", desc: "Pratik ve düzenli. Toplumun temel yapısını destekler. Güvenilirlik ve gelenekler onlar için önemlidir.", types: ["ISTJ","ISFJ","ESTJ","ESFJ"] },
+    en: { name: "Sentinels", desc: "Practical and organized. Support the fundamental structure of society. Reliability and traditions are important to them.", types: ["ISTJ","ISFJ","ESTJ","ESFJ"] },
+    color: "#4a78a0"
+  },
+  explorer: {
+    tr: { name: "Kaşifler", desc: "Meraklı ve pratik. Anlık durumlarla başa çıkmada ustadır. Özgürlük ve esnekliği tercih eder.", types: ["ISTP","ISFP","ESTP","ESFP"] },
+    en: { name: "Explorers", desc: "Curious and practical. Expert at dealing with immediate situations. Prefers freedom and flexibility.", types: ["ISTP","ISFP","ESTP","ESFP"] },
+    color: "#d4882b"
+  }
+};
+
+const LETTER_PAIRS = [
+  {
+    dim: { tr: "Enerji Yönelimi", en: "Energy Orientation" },
+    a: "E", b: "I",
+    aColor: "#e8f0f2", aText: "#4a7c8a",
+    bColor: "#ede8f4", bText: "#7a6aaa",
+    a_name: { tr: "Dışadönük", en: "Extraverted" },
+    b_name: { tr: "İçedönük", en: "Introverted" },
+    a_desc: { tr: "Sosyal ortamlardan enerji alır. Geniş bir arkadaş çevresine sahiptir. Düşünmeden önce konuşur, dışa dönük ve girişken.", en: "Draws energy from social situations. Has a wide social circle. Thinks out loud, outgoing and assertive." },
+    b_desc: { tr: "Yalnız kalmaktan enerji alır. Küçük bir yakın çevreye sahiptir. Konuşmadan önce düşünür, derinlikli ve yansıtıcı.", en: "Draws energy from solitude. Has a small, close social circle. Thinks before speaking, deep and reflective." }
+  },
+  {
+    dim: { tr: "Bilgi İşleme", en: "Information Processing" },
+    a: "S", b: "N",
+    aColor: "#eef2e8", aText: "#7a9e5a",
+    bColor: "#f4ede8", bText: "#c07840",
+    a_name: { tr: "Duyusal", en: "Sensing" },
+    b_name: { tr: "Sezgisel", en: "iNtuitive" },
+    a_desc: { tr: "Somut olgulara ve mevcut gerçekliğe odaklanır. Detaylara dikkat eder. Deneyimi teoriye tercih eder.", en: "Focuses on concrete facts and present reality. Pays attention to details. Prefers experience to theory." },
+    b_desc: { tr: "Soyut kavramlar ve gelecek olasılıklara odaklanır. Büyük resmi görür. Teorileri ve kalıpları tercih eder.", en: "Focuses on abstract concepts and future possibilities. Sees the big picture. Prefers theories and patterns." }
+  },
+  {
+    dim: { tr: "Karar Verme", en: "Decision Making" },
+    a: "T", b: "F",
+    aColor: "#e8ecf2", aText: "#5a6a8a",
+    bColor: "#f2e8ed", bText: "#c05a7a",
+    a_name: { tr: "Düşünen", en: "Thinking" },
+    b_name: { tr: "Hisseden", en: "Feeling" },
+    a_desc: { tr: "Kararlarını mantık ve nesnel analizle alır. Tutarlılığa değer verir. Doğruyu söylemek için duygusallıktan vazgeçebilir.", en: "Makes decisions through logic and objective analysis. Values consistency. May sacrifice tact for truth." },
+    b_desc: { tr: "Kararlarını değerlere ve duygu uyumuna göre alır. Empatiyi ön plana çıkarır. İnsanlar arası uyumu önemser.", en: "Makes decisions based on values and emotional resonance. Prioritizes empathy. Cares about interpersonal harmony." }
+  },
+  {
+    dim: { tr: "Yaşam Tarzı", en: "Lifestyle" },
+    a: "J", b: "P",
+    aColor: "#e8f2e8", aText: "#6a8a6a",
+    bColor: "#f2ede8", bText: "#a07040",
+    a_name: { tr: "Yargılayan", en: "Judging" },
+    b_name: { tr: "Algılayan", en: "Perceiving" },
+    a_desc: { tr: "Yapı ve düzeni tercih eder. Plan yapar ve kararlara bağlı kalır. Belirsizliği sevmez, programlı yaşar.", en: "Prefers structure and order. Makes plans and sticks to decisions. Dislikes ambiguity, lives by schedule." },
+    b_desc: { tr: "Esneklik ve kendiliğindeliği tercih eder. Seçenekleri açık tutar. Değişime kolayca uyum sağlar.", en: "Prefers flexibility and spontaneity. Keeps options open. Adapts easily to change." }
+  }
+];
+
+const QUESTIONS = [
+  // E/I
+  { dim: "EI", a_score: "E", q: { tr: "Sosyal etkinliklerde genellikle enerji kazanırım.", en: "I generally gain energy at social events." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "E", q: { tr: "Tanımadığım insanlarla konuşmak beni heyecanlandırır.", en: "Talking to people I don't know excites me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "I", q: { tr: "Uzun bir sosyal etkinliğin ardından yalnız kalmaya ihtiyaç duyarım.", en: "After a long social event, I need to be alone." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "I", q: { tr: "Büyük gruplardan ziyade tek ya da iki kişilik sohbetleri tercih ederim.", en: "I prefer one-on-one conversations to large groups." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "E", q: { tr: "Düşüncelerimi düşünmeden önce sesli paylaşırım.", en: "I share my thoughts out loud before thinking them through." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "I", q: { tr: "Toplantılar ya da partilerden önce kendimi yorgun hissederim.", en: "I feel tired before meetings or parties." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "E", q: { tr: "Çevremde ne kadar çok insan olursa o kadar iyi hissederim.", en: "The more people around me, the better I feel." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "I", q: { tr: "Derin düşünmek için sessizliğe ihtiyaç duyarım.", en: "I need silence to think deeply." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "E", q: { tr: "Yeni insanlarla tanışmak benim için kolaydır.", en: "Meeting new people is easy for me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "I", q: { tr: "Kitap okumak ya da film izlemek gibi yalnız aktiviteleri tercih ederim.", en: "I prefer solo activities like reading or watching films." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "E", q: { tr: "Bir sorunla karşılaştığımda hemen başkalarıyla paylaşırım.", en: "When I face a problem, I immediately share it with others." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "I", q: { tr: "Arkadaşlarımdan çok zaman zaman uzak durmam gerekir.", en: "I sometimes need to distance myself from even my friends." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "E", q: { tr: "Sessizlik beni rahatsız eder, konuşma ihtiyacı hissederim.", en: "Silence bothers me; I feel the need to talk." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "I", q: { tr: "Kalabalık ortamlarda kendimi bunalmış hissedebilirim.", en: "I can feel overwhelmed in crowded environments." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "EI", a_score: "E", q: { tr: "Eğlence demek benim için insanlarla bir araya gelmek demektir.", en: "Fun for me means getting together with people." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  // S/N
+  { dim: "SN", a_score: "S", q: { tr: "Olgulara ve somut ayrıntılara dikkat ederim.", en: "I pay attention to facts and concrete details." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "N", q: { tr: "Büyük resmi görmek ayrıntılardan daha önemlidir.", en: "Seeing the big picture is more important than details." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "S", q: { tr: "Kanıtlanmış yöntemleri yeni ve denenmemiş olanlardan tercih ederim.", en: "I prefer proven methods over new and untested ones." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "N", q: { tr: "Soyut kavramlar ve teoriler beni heyecanlandırır.", en: "Abstract concepts and theories excite me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "S", q: { tr: "Mevcut gerçekliğe odaklanmak, olası gelecekleri hayal etmekten daha önemlidir.", en: "Focusing on current reality is more important than imagining possible futures." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "N", q: { tr: "Kalıpları ve bağlantıları fark etmek doğal olarak gelir bana.", en: "Noticing patterns and connections comes naturally to me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "S", q: { tr: "Pratik çözümler hayalci fikirlerden daha değerlidir.", en: "Practical solutions are more valuable than dreamy ideas." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "N", q: { tr: "Sık sık gelecekte neler olabileceğini hayal ederim.", en: "I often imagine what might happen in the future." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "S", q: { tr: "Talimatları adım adım takip etmekten hoşlanırım.", en: "I enjoy following instructions step by step." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "N", q: { tr: "Günlük sıradanlıktan çok yaratıcı keşifleri tercih ederim.", en: "I prefer creative exploration over daily routine." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "S", q: { tr: "Beş duyumla deneyimlediğim şeylere güvenirim.", en: "I trust things I can experience with my five senses." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "N", q: { tr: "Semboller ve metaforlar bana anlam ifade eder.", en: "Symbols and metaphors hold meaning for me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "S", q: { tr: "Gerçekçi ve uygulanabilir fikirlere değer veririm.", en: "I value realistic and applicable ideas." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "N", q: { tr: "Düşünürken sıklıkla bir konudan diğerine atlarım.", en: "When thinking, I often jump from one topic to another." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "SN", a_score: "S", q: { tr: "Detaylara odaklanmak benim için doğaldır.", en: "Focusing on details comes naturally to me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  // T/F
+  { dim: "TF", a_score: "T", q: { tr: "Kararlarımı mantık ve nesnel analizle alırım.", en: "I make decisions through logic and objective analysis." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "F", q: { tr: "Bir kararın insanlara etkisi benim için çok önemlidir.", en: "The effect of a decision on people is very important to me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "T", q: { tr: "Eleştiriyi kişisel olarak almam; bilgi olarak değerlendiririm.", en: "I don't take criticism personally; I evaluate it as information." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "F", q: { tr: "Çevrimdeki insanların duygusal durumuna karşı duyarlıyım.", en: "I am sensitive to the emotional state of people around me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "T", q: { tr: "Tartışmalarda doğruluk, naziklikten önce gelir.", en: "In arguments, truth comes before politeness." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "F", q: { tr: "Başkalarının refahını kendi çıkarlarımın önünde tutarım.", en: "I put others' well-being before my own interests." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "T", q: { tr: "Adil olmak, tüm taraflara iyi hissettirmekten daha önemlidir.", en: "Being fair is more important than making everyone feel good." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "F", q: { tr: "İnsanların duygularını anlamak benim için önem taşır.", en: "Understanding people's feelings matters to me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "T", q: { tr: "Duygusal değil, rasyonel kararlar almak daha iyidir.", en: "Making rational rather than emotional decisions is better." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "F", q: { tr: "İnsanlar arasındaki çatışmalara arabulucu olmak isterim.", en: "I want to mediate conflicts between people." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "T", q: { tr: "Prensiplere bağlılık, genel kanıya uymaktan önce gelir.", en: "Adherence to principles comes before following popular opinion." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "F", q: { tr: "Empati, bir toplumun en önemli değerlerinden biridir.", en: "Empathy is one of the most important values of a society." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "T", q: { tr: "Analiz, sezgiden daha güvenilir bir karar verme aracıdır.", en: "Analysis is a more reliable decision-making tool than intuition." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "F", q: { tr: "Zor zamanlarda insanların duygusal desteğe ihtiyaçları olduğunu bilirim.", en: "I know that people need emotional support in difficult times." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "TF", a_score: "T", q: { tr: "Karar verirken duygularımı bir kenara koyarım.", en: "I set my emotions aside when making decisions." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  // J/P
+  { dim: "JP", a_score: "J", q: { tr: "Listeleri ve planları kullanmak benim için doğaldır.", en: "Using lists and plans comes naturally to me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "P", q: { tr: "Spontane kararlar almak bana heyecan verir.", en: "Making spontaneous decisions excites me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "J", q: { tr: "Son dakika değişikliklerinden rahatsız olurum.", en: "I get bothered by last-minute changes." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "P", q: { tr: "Seçeneklerimi açık tutmak benim için rahatlatıcıdır.", en: "Keeping my options open is comforting for me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "J", q: { tr: "Görevleri zamanında tamamlamak benim için önemlidir.", en: "Completing tasks on time is important to me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "P", q: { tr: "Belirsizlik beni tedirgin etmez, aksine heyecanlandırır.", en: "Uncertainty doesn't make me anxious; it excites me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "J", q: { tr: "Çalışma alanım ve günlük rutinlerim düzenlidir.", en: "My work space and daily routines are organized." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "P", q: { tr: "Plansız eğlence en iyi eğlencedir.", en: "Unplanned fun is the best fun." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "J", q: { tr: "Karar verdikten sonra geri adım atmak benim için zordur.", en: "Going back on a decision is difficult for me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "P", q: { tr: "Birden fazla projeyi eş zamanlı yürütmek beni üretken kılar.", en: "Running multiple projects simultaneously makes me productive." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "J", q: { tr: "Erken teslim etmek geç teslim etmekten her zaman daha iyidir.", en: "Delivering early is always better than delivering late." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "P", q: { tr: "Katı bir programa bağlı olmak beni bunaltır.", en: "Being bound to a rigid schedule overwhelms me." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "J", q: { tr: "Belirsiz bir durumu netleştirmek beni rahatlatır.", en: "Clarifying an ambiguous situation puts me at ease." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "P", q: { tr: "Beklenmedik fırsatlar planları bozmaz, onları zenginleştirir.", en: "Unexpected opportunities don't ruin plans, they enrich them." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } },
+  { dim: "JP", a_score: "J", q: { tr: "Seyahat planı yapmak seyahatin kendisi kadar önemlidir.", en: "Planning a trip is as important as the trip itself." }, label: { tr: ["Kesinlikle Hayır","Kesinlikle Evet"], en: ["Strongly Disagree","Strongly Agree"] } }
+];
+
+// ── STATE ────────────────────────────────────────────────────────────
+let lang = 'tr';
+let currentQ = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let resultType = null;
+
+// ── LANG ─────────────────────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === l.toUpperCase()));
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    el.innerHTML = el.getAttribute('data-' + l);
+  });
+  if (document.getElementById('page-test').classList.contains('active')) renderQ();
+  if (document.getElementById('page-result').classList.contains('active') && resultType) buildResult(resultType);
+  if (document.getElementById('matchResult').classList.contains('visible')) {
+    const a = document.getElementById('typeA').value;
+    const b = document.getElementById('typeB').value;
+    renderMatchResult(a, b, genderA, genderB);
+  }
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+}
+
+function startTest() {
+  currentQ = 0; answers = new Array(QUESTIONS.length).fill(null);
+  showPage('test'); renderQ();
+}
+
+function retakeTest() { showPage('home'); }
+
+function showAllTypes() {
+  resultType = 'INTJ';
+  buildResult('INTJ');
+  showPage('result');
+}
+
+// ── TEST ─────────────────────────────────────────────────────────────
+function renderQ() {
+  const q = QUESTIONS[currentQ];
+  const pct = Math.round((currentQ / QUESTIONS.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('qCounter').textContent = (currentQ + 1) + ' / ' + QUESTIONS.length;
+  document.getElementById('qText').textContent = q.q[lang];
+  document.getElementById('labelA').textContent = q.label[lang][0];
+  document.getElementById('labelB').textContent = q.label[lang][1];
+
+  const wrap = document.getElementById('scaleBtns');
+  wrap.innerHTML = '';
+  const labels = ['1','2','3','4','5'];
+  labels.forEach((l, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'scale-btn' + (answers[currentQ] === i ? ' selected' : '');
+    btn.textContent = l;
+    btn.onclick = () => selectAnswer(i);
+    wrap.appendChild(btn);
+  });
+
+  const btnNext = document.getElementById('btnNext');
+  btnNext.disabled = answers[currentQ] === null;
+  btnNext.setAttribute('data-tr', currentQ === QUESTIONS.length - 1 ? 'Sonuçları Gör' : 'İleri');
+  btnNext.setAttribute('data-en', currentQ === QUESTIONS.length - 1 ? 'See Results' : 'Next');
+  btnNext.textContent = currentQ === QUESTIONS.length - 1
+    ? (lang === 'tr' ? 'Sonuçları Gör' : 'See Results')
+    : (lang === 'tr' ? 'İleri' : 'Next');
+
+  document.getElementById('btnBack').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+}
+
+function selectAnswer(i) {
+  answers[currentQ] = i;
+  document.querySelectorAll('.scale-btn').forEach((b, idx) => b.classList.toggle('selected', idx === i));
+  document.getElementById('btnNext').disabled = false;
+}
+
+function nextQ() {
+  if (answers[currentQ] === null) return;
+  if (currentQ < QUESTIONS.length - 1) { currentQ++; renderQ(); }
+  else calcResult();
+}
+
+function prevQ() { if (currentQ > 0) { currentQ--; renderQ(); } }
+
+// ── CALC ─────────────────────────────────────────────────────────────
+function calcResult() {
+  const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+  QUESTIONS.forEach((q, i) => {
+    const val = answers[i]; // 0-4: 0=strongly A, 4=strongly B
+    if (val === null) return;
+    const dims = q.dim; // "EI" etc
+    const a = dims[0], b = dims[1];
+    const aScore = q.a_score;
+    const bScore = aScore === a ? b : a;
+    // score maps: 0→strong a, 1→mild a, 2→neutral, 3→mild b, 4→strong b
+    const weights = [2, 1, 0, 1, 2];
+    if (val < 2) scores[aScore] += weights[val];
+    else if (val > 2) scores[bScore] += weights[val];
+  });
+
+  const type = (scores.E >= scores.I ? 'E' : 'I') +
+               (scores.S >= scores.N ? 'S' : 'N') +
+               (scores.T >= scores.F ? 'T' : 'F') +
+               (scores.J >= scores.P ? 'J' : 'P');
+
+  resultType = type;
+  buildResult(type, scores);
+  showPage('result');
+}
+
+// ── RESULT BUILD ─────────────────────────────────────────────────────
+function buildResult(type, scores) {
+  const data = TYPES[type];
+  const d = data[lang];
+  const group = GROUPS[data.group];
+  const gc = group.color;
+
+  // Badge
+  const badge = document.getElementById('resultBadge');
+  badge.innerHTML = '';
+  const letterColors = ['#4a7c8a','#c07840','#c05a7a','#6a8a6a'];
+  const colorMap = { E:'#4a7c8a',I:'#7a6aaa',S:'#7a9e5a',N:'#c07840',T:'#5a6a8a',F:'#c05a7a',J:'#6a8a6a',P:'#a07040' };
+  type.split('').forEach(l => {
+    const el = document.createElement('div');
+    el.className = 'type-letter';
+    el.style.background = colorMap[l];
+    el.textContent = l;
+    badge.appendChild(el);
+  });
+
+  document.getElementById('resultType').textContent = type;
+  document.getElementById('resultNickname').textContent = lang === 'tr' ? ('— ' + d.name + ' —') : ('— ' + d.name + ' —');
+  document.getElementById('resultDesc').textContent = d.desc;
+
+  // Score bars
+  if (scores) {
+    const sb = document.getElementById('scoreBars');
+    sb.innerHTML = '';
+    const dims = [['E','I'],['S','N'],['T','F'],['J','P']];
+    dims.forEach(([a, b]) => {
+      const aS = scores[a] || 0, bS = scores[b] || 0;
+      const total = aS + bS || 1;
+      const aPct = Math.round((aS / total) * 100);
+      const bPct = 100 - aPct;
+      const aWins = aS >= bS;
+      const ca = colorMap[a], cb = colorMap[b];
+      const row = document.createElement('div');
+      row.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <span style="font-size:13px;color:var(--muted);width:16px;text-align:center;font-weight:500;color:${ca}">${a}</span>
+          <div style="flex:1;height:8px;background:var(--progress-bg);border-radius:4px;overflow:hidden;position:relative">
+            <div style="position:absolute;top:0;left:0;width:${aPct}%;height:100%;background:${ca};border-radius:4px;transition:width .8s ease"></div>
+          </div>
+          <span style="font-size:12px;font-weight:500;color:${ca};width:36px">${aPct}%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+          <span style="font-size:13px;width:16px;text-align:center;font-weight:500;color:${cb}">${b}</span>
+          <div style="flex:1;height:8px;background:var(--progress-bg);border-radius:4px;overflow:hidden;position:relative">
+            <div style="position:absolute;top:0;left:0;width:${bPct}%;height:100%;background:${cb};border-radius:4px;transition:width .8s ease"></div>
+          </div>
+          <span style="font-size:12px;font-weight:500;color:${cb};width:36px">${bPct}%</span>
+        </div>
+        <div style="height:12px"></div>
+      `;
+      sb.appendChild(row);
+    });
+  }
+
+  // Letter explainer
+  buildLetterRows();
+
+  // Group cards
+  buildGroupCards(data.group);
+
+  // Type grid
+  buildTypeGrid(type);
+}
+
+function buildLetterRows() {
+  const colorMap = { E:'#e8f0f2', I:'#ede8f4', S:'#eef2e8', N:'#f4ede8', T:'#e8ecf2', F:'#f2e8ed', J:'#e8f2e8', P:'#f2ede8' };
+  const textMap = { E:'#4a7c8a', I:'#7a6aaa', S:'#7a9e5a', N:'#c07840', T:'#5a6a8a', F:'#c05a7a', J:'#6a8a6a', P:'#a07040' };
+  const container = document.getElementById('letterRows');
+  container.innerHTML = '';
+  LETTER_PAIRS.forEach(lp => {
+    const row = document.createElement('div');
+    row.className = 'letter-row';
+    row.innerHTML = `<div class="letter-row-header">${lp.dim[lang]}</div>
+      <div class="letter-pair">
+        <div class="letter-card" style="background:${colorMap[lp.a]}">
+          <div class="letter-big" style="color:${textMap[lp.a]}">${lp.a}</div>
+          <div class="letter-info"><h4 style="color:${textMap[lp.a]}">${lp.a_name[lang]}</h4><p>${lp.a_desc[lang]}</p></div>
+        </div>
+        <div class="letter-card" style="background:${colorMap[lp.b]}">
+          <div class="letter-big" style="color:${textMap[lp.b]}">${lp.b}</div>
+          <div class="letter-info"><h4 style="color:${textMap[lp.b]}">${lp.b_name[lang]}</h4><p>${lp.b_desc[lang]}</p></div>
+        </div>
+      </div>`;
+    container.appendChild(row);
+  });
+}
+
+function buildGroupCards(activeGroup) {
+  const container = document.getElementById('groupCards');
+  container.innerHTML = '';
+  Object.entries(GROUPS).forEach(([key, g]) => {
+    const d = g[lang];
+    const isActive = key === activeGroup;
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    card.style.borderLeft = `3px solid ${g.color}`;
+    if (isActive) card.style.background = 'var(--pill-bg)';
+    const pills = d.types.map(t => `<span class="group-pill" style="background:${g.color}22;color:${g.color}">${t}</span>`).join('');
+    card.innerHTML = `
+      <div class="group-name" style="color:${g.color}">${d.name}${isActive ? ' ★' : ''}</div>
+      <div class="group-types">${pills}</div>
+      <div class="group-desc">${d.desc}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function buildTypeGrid(currentType) {
+  const colorMap = { E:'#4a7c8a', I:'#7a6aaa', S:'#7a9e5a', N:'#c07840', T:'#5a6a8a', F:'#c05a7a', J:'#6a8a6a', P:'#a07040' };
+  const container = document.getElementById('typeGrid');
+  container.innerHTML = '';
+  Object.entries(TYPES).forEach(([code, data]) => {
+    const d = data[lang];
+    const g = GROUPS[data.group];
+    const card = document.createElement('div');
+    card.className = 'type-card' + (code === currentType ? ' highlighted' : '');
+    const letters = code.split('').map(l => `<div class="tl" style="background:${colorMap[l]}">${l}</div>`).join('');
+    card.innerHTML = `
+      <div class="type-card-badge">${letters}</div>
+      <div class="type-card-name">${code}</div>
+      <div class="type-card-nick">${d.name}</div>
+      <span class="type-card-group" style="background:${g.color}22;color:${g.color}">${g[lang].name}</span>
+    `;
+    card.onclick = () => openModal(code);
+    container.appendChild(card);
+  });
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────
+function openModal(code) {
+  const data = TYPES[code];
+  const d = data[lang];
+  const colorMap = { E:'#4a7c8a', I:'#7a6aaa', S:'#7a9e5a', N:'#c07840', T:'#5a6a8a', F:'#c05a7a', J:'#6a8a6a', P:'#a07040' };
+
+  const badge = document.getElementById('modalBadge');
+  badge.innerHTML = code.split('').map(l => `<div class="tl" style="background:${colorMap[l]};width:28px;height:28px;border-radius:6px;font-size:14px">${l}</div>`).join('');
+
+  document.getElementById('modalTitle').textContent = code;
+  document.getElementById('modalNick').textContent = d.name;
+  document.getElementById('modalDesc').textContent = d.desc;
+
+  const traitLabels = {
+    strengths: { tr: 'Güçlü Yönler', en: 'Strengths' },
+    weaknesses: { tr: 'Zayıf Yönler', en: 'Weaknesses' },
+    careers: { tr: 'Kariyer', en: 'Careers' },
+    famous: { tr: 'Tanınmış İsimler', en: 'Famous Figures' }
+  };
+  const traitColors = {
+    strengths: '#eef4e8', weaknesses: '#f4e8e8', careers: '#e8eef4', famous: '#f4f0e8'
+  };
+
+  const traits = document.getElementById('modalTraits');
+  traits.innerHTML = '';
+  ['strengths','weaknesses','careers','famous'].forEach(key => {
+    const card = document.createElement('div');
+    card.className = 'trait-card';
+    card.style.background = traitColors[key];
+    card.innerHTML = `<div class="label">${traitLabels[key][lang]}</div><div class="val">${d[key]}</div>`;
+    traits.appendChild(card);
+  });
+
+  document.getElementById('modalExtra').innerHTML = '';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay') || e.type !== 'click' || !document.getElementById('modalBox').contains(e.target)) {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+}
+
+// ── MATCH STATE ───────────────────────────────────────────────────────
+let genderA = 'm', genderB = 'f';
+
+function setGender(person, g) {
+  if (person === 'A') genderA = g;
+  else genderB = g;
+  ['m','f','n'].forEach(x => {
+    document.getElementById('gender'+person+'-'+x).classList.toggle('active', x === g);
+  });
+  // update labels
+  const gLabelTr = { m: 'Erkek', f: 'Kadın', n: 'Belirtme' };
+  const gLabelEn = { m: 'Male', f: 'Female', n: 'Unspecified' };
+  ['m','f','n'].forEach(x => {
+    const btn = document.getElementById('gender'+person+'-'+x);
+    btn.setAttribute('data-tr', gLabelTr[x]);
+    btn.setAttribute('data-en', gLabelEn[x]);
+    btn.textContent = lang === 'tr' ? gLabelTr[x] : gLabelEn[x];
+  });
+}
+
+// ── COMPATIBILITY ENGINE ──────────────────────────────────────────────
+
+// Score each pair across dimensions
+function calcCompatScore(a, b) {
+  let score = 50;
+  const dims = [[0,1],[1,2],[2,3],[3,4]]; // EI, SN, TF, JP indices
+  const aLetters = a.split('');
+  const bLetters = b.split('');
+
+  // Same on Intuition/Sensing: +10 (shared worldview)
+  if (aLetters[1] === bLetters[1]) score += 10;
+  else score -= 5;
+
+  // Same on TF: -5 (less complementarity) if same, but good for T-T (intellectual bond)
+  if (aLetters[2] === bLetters[2] && aLetters[2] === 'T') score += 5;
+  if (aLetters[2] !== bLetters[2]) score += 8; // T+F complement
+
+  // Same JP: +8 (lifestyle alignment)
+  if (aLetters[3] === bLetters[3]) score += 8;
+  else score -= 3;
+
+  // Same EI: mild negative (both introvert = less social tension but may isolate)
+  if (aLetters[0] === bLetters[0] && aLetters[0] === 'I') score += 2;
+  if (aLetters[0] === bLetters[0] && aLetters[0] === 'E') score += 5;
+  if (aLetters[0] !== bLetters[0]) score += 4; // E-I complement
+
+  // Classic strong pairs bonus
+  const strongPairs = [['INTJ','ENFP'],['INTP','ENTJ'],['INFJ','ENTP'],['INFP','ENFJ'],['ISTJ','ESFP'],['ISFJ','ESTP'],['ESTJ','ISFP'],['ESFJ','ISTP']];
+  const pair = [a,b].sort().join('-');
+  if (strongPairs.some(p => p.sort().join('-') === pair)) score += 12;
+
+  // Same type penalty (too similar, less growth)
+  if (a === b) score -= 8;
+
+  return Math.min(97, Math.max(34, score));
+}
+
+const ASPECTS_META = [
+  { key: 'romance',   icon: '♥', tr: 'Romantizm',         en: 'Romance' },
+  { key: 'comm',      icon: '💬', tr: 'İletişim',          en: 'Communication' },
+  { key: 'parenting', icon: '👶', tr: 'Ebeveynlik',        en: 'Parenting' },
+  { key: 'intimacy',  icon: '🔥', tr: 'Cinsellik & Yakınlık', en: 'Intimacy' },
+  { key: 'finance',   icon: '💰', tr: 'Finansal Uyum',     en: 'Financial Compatibility' },
+  { key: 'conflict',  icon: '⚡', tr: 'Çatışma Çözümü',   en: 'Conflict Resolution' },
+  { key: 'growth',    icon: '🌱', tr: 'Kişisel Gelişim',   en: 'Personal Growth' },
+  { key: 'daily',     icon: '🏠', tr: 'Günlük Yaşam',      en: 'Daily Life' },
+];
+
+// Generate aspect scores and texts from type pair
+function buildAspects(a, b, ga, gb, lang) {
+  const aL = a.split('');
+  const bL = b.split('');
+  const sameN = aL[1] === bL[1] && aL[1] === 'N';
+  const sameS = aL[1] === bL[1] && aL[1] === 'S';
+  const sameJ = aL[3] === bL[3] && aL[3] === 'J';
+  const sameP = aL[3] === bL[3] && aL[3] === 'P';
+  const tfComplement = aL[2] !== bL[2];
+  const eiComplement = aL[0] !== bL[0];
+  const bothT = aL[2] === bL[2] && aL[2] === 'T';
+  const bothF = aL[2] === bL[2] && aL[2] === 'F';
+  const bothN = aL[1] === bL[1] && aL[1] === 'N';
+  const aGLabel = ga === 'm' ? (lang==='tr'?'erkek':'man') : ga === 'f' ? (lang==='tr'?'kadın':'woman') : (lang==='tr'?'kişi':'person');
+  const bGLabel = gb === 'm' ? (lang==='tr'?'erkek':'man') : gb === 'f' ? (lang==='tr'?'kadın':'woman') : (lang==='tr'?'kişi':'person');
+
+  // Pre-compute sub-scores
+  function sc(base, mods) { return Math.min(5, Math.max(1, Math.round(base + mods.reduce((s,x)=>s+x,0)))); }
+
+  const scores = {
+    romance:   sc(3, [bothN?1:0, tfComplement?1:0, sameJ?0.5:0, a===b?-1:0]),
+    comm:      sc(3, [sameN?1:0, bothT?0.5:0, bothF?0.5:0, tfComplement?0.5:0, eiComplement?0.3:0]),
+    parenting: sc(3, [sameJ?1:0, sameS?0.5:0, bothF?1:0, tfComplement?0.5:0, sameP?-0.5:0]),
+    intimacy:  sc(3, [tfComplement?1:0, eiComplement?0.5:0, bothN?0.5:0, sameJ?0.3:0]),
+    finance:   sc(3, [sameJ?1.5:0, bothT?1:0, sameP?-1:0, sameS?0.5:0]),
+    conflict:  sc(3, [tfComplement?-0.5:0, bothT?1:0, bothF?0.5:0, sameJ?0.5:0, eiComplement?0.3:0]),
+    growth:    sc(3, [eiComplement?1:0, bothN?0.5:0, tfComplement?0.5:0, a===b?-1:0]),
+    daily:     sc(3, [sameJ?1:0, sameP?0.5:0, sameS?0.5:0, bothF?0.5:0]),
+  };
+
+  const texts = lang === 'tr' ? {
+    romance: tfComplement
+      ? `${a} ${aGLabel} ve ${b} ${bGLabel} düşünce-duygu tamamlayıcılığı sayesinde güçlü bir çekim yaşar. Biri mantıkla, diğeri kalpten yaklaşır; bu denge ilişkiye derinlik katar.`
+      : bothT
+        ? `Her iki partner de duygusal değil rasyonel bir yaklaşım sergiler. Romantizm kendiliğinden gelişmeyebilir; bilinçli çaba ile duygusal bağ kurulmalıdır.`
+        : `Her iki partner de duygu odaklıdır. İlişkide sıcaklık ve empati boldur; ancak pratik konularda anlaşmazlık çıkabilir.`,
+    comm: sameN
+      ? `Her iki ${aGLabel} de soyut kavramlar ve geleceğe dair fikirler üzerine saatlerce konuşabilir. Fikir alışverişi bu çift için bir zevktir.`
+      : sameS
+        ? `İkisi de somut, gerçekçi ve pratik konuları tercih eder. Günlük iletişim akıcı ve verimlidir.`
+        : `Biri büyük fikirleri, diğeri pratik gerçekleri sever. İletişimde zaman zaman "farklı dil konuşma" hissi yaşanabilir; ancak bu çeşitlilik ilişkiyi zenginleştirebilir.`,
+    parenting: bothF
+      ? `Her iki ebeveyn de çocuklarına karşı sıcak, destekleyici ve empatik bir yaklaşım sergiler. Ev ortamı duygusal olarak güvenlidir.`
+      : bothT
+        ? `Ebeveynlik yaklaşımı yapılandırılmış ve mantık odaklıdır. Çocuklara bağımsızlık ve problem çözme becerileri öğretilir; ancak duygusal destek bilinçli olarak gösterilmelidir.`
+        : `Birinin sıcaklığı ve diğerinin yapısı, dengeli bir ebeveynlik tarzı yaratır. Birisi duygusal ihtiyaçları karşılarken diğeri sınırlar ve kurallar koyar.`,
+    intimacy: tfComplement
+      ? `T-F tamamlayıcılığı cinsel çekimi artırır; biri kontrolü sever, diğeri duyguları. Bu gerilim beraberinde güçlü bir fiziksel yakınlık getirir.`
+      : bothN
+        ? `İkisi de hayal gücü zengin bireyler olarak birlikteliğe yenilik ve derinlik katar. Duygusal bağ fiziksel yakınlığı besler.`
+        : `Benzer değerler ve yaklaşım tarzı saygı dolu ve istikrarlı bir cinsel birliktelik yaratır; ancak spontanlık için çaba gerekebilir.`,
+    finance: sameJ
+      ? `Her iki partner de finansal konularda planlı ve düzenlidir. Bütçe takibi, tasarruf ve ortak hedefler kolayca benimsenir.`
+      : sameP
+        ? `Her ikisi de esnek ve anlık kararlar almayı sever. Finansal planlama zayıf kalabilir; ortak bir yapı oluşturulması kritik önem taşır.`
+        : `Biri finansal düzeni, diğeri esnekliği tercih eder. Farklı para anlayışları sürtüşme yaratabilir; ancak iyi iletişimle denge kurulabilir.`,
+    conflict: bothT
+      ? `Çatışmalar mantıkla çözülür. Her iki partner de argümanlarını kanıta dayandırır; ancak duygusal ihtiyaçlar göz ardı edilebilir.`
+      : bothF
+        ? `Her ikisi de duygu odaklı olduğu için çatışmalar bazen uzayabilir. Ortak bir çözüme ulaşmak duygusal olarak yorucu olabilir.`
+        : `T partneri çözüm ararken F partneri anlaşılmak ister. Bu denge sağlandığında çatışmalar büyümeden çözülür; sağlanamadığında kronikleşebilir.`,
+    growth: eiComplement
+      ? `İçedönük partner derinlik sunarken, dışadönük partner yeni deneyimler getirir. İkisi birbirini büyümeye teşvik eder.`
+      : bothN
+        ? `Her iki partner de sürekli öğrenme ve keşfe açıktır. Birlikte büyümek için ideal zemin var.`
+        : `Benzerlikleri birbirini rahatlatır; ancak gerçek büyüme için birbirini zorlamayı öğrenmeleri gerekir.`,
+    daily: sameJ
+      ? `Ev düzeni, rutinler ve sorumluluk paylaşımı konusunda doğal bir uyum vardır. Ortak kararlar hızla alınır.`
+      : sameP
+        ? `İkisi de spontane ve esnek bir yaşam tarzını sever. Günlük hayat eğlenceli ama zaman zaman kaotik olabilir.`
+        : `J partner rutini ve yapıyı tercih ederken P partner esnekliği sever. Bu fark hem tamamlayıcı hem de sürtüşme kaynağı olabilir.`,
+  } : {
+    romance: tfComplement
+      ? `The ${a} ${aGLabel} and ${b} ${bGLabel} experience a powerful attraction through their thinking-feeling complementarity. One approaches with logic, the other with heart — this balance adds depth.`
+      : bothT
+        ? `Both partners take a rational rather than emotional approach. Romance may not come naturally; building emotional connection requires deliberate effort.`
+        : `Both are feeling-oriented. The relationship is warm and empathetic, though disagreements may arise on practical matters.`,
+    comm: sameN
+      ? `Both can talk for hours about abstract ideas and future possibilities. Intellectual exchange is a pleasure for this pair.`
+      : sameS
+        ? `Both prefer concrete, realistic and practical topics. Daily communication is smooth and efficient.`
+        : `One loves big ideas, the other prefers practical facts. There can be a sense of "speaking different languages," but this diversity can enrich the relationship.`,
+    parenting: bothF
+      ? `Both parents are warm, supportive and empathetic toward their children. The home is emotionally safe and nurturing.`
+      : bothT
+        ? `Parenting is structured and logic-oriented. Children learn independence and problem-solving, though emotional support must be consciously expressed.`
+        : `One's warmth and the other's structure create a balanced parenting style — one meets emotional needs while the other sets boundaries.`,
+    intimacy: tfComplement
+      ? `The T-F complementarity fuels sexual attraction; one craves control, the other emotion. This tension generates strong physical chemistry.`
+      : bothN
+        ? `Both have rich imaginations, bringing novelty and depth to their intimate life. Emotional connection deeply feeds physical closeness.`
+        : `Shared values create respectful, stable intimacy; however, spontaneity may require intentional effort.`,
+    finance: sameJ
+      ? `Both partners are planful and organized with money. Budgeting, saving, and shared financial goals are naturally embraced.`
+      : sameP
+        ? `Both love flexibility and spontaneous decisions. Financial planning may suffer; establishing a shared framework is critical.`
+        : `One prefers financial order, the other flexibility. Different money philosophies can cause friction, but good communication can find balance.`,
+    conflict: bothT
+      ? `Conflicts are resolved logically. Both partners argue from evidence, though emotional needs can get overlooked.`
+      : bothF
+        ? `Because both are feeling-oriented, conflicts can drag on. Reaching a resolution may be emotionally draining.`
+        : `The T partner seeks solutions while the F partner needs to feel heard. When this balance is achieved, conflicts resolve quickly; when not, they linger.`,
+    growth: eiComplement
+      ? `The introvert brings depth while the extrovert introduces new experiences. Each pushes the other toward growth.`
+      : bothN
+        ? `Both are drawn to continuous learning and discovery — ideal ground for growing together.`
+        : `Similarities create comfort, but real growth requires learning to challenge each other.`,
+    daily: sameJ
+      ? `Natural alignment on home order, routines and shared responsibilities. Joint decisions are made quickly.`
+      : sameP
+        ? `Both love spontaneous, flexible lifestyles. Daily life is fun but can become chaotic.`
+        : `The J partner prefers structure while the P partner loves flexibility. This difference can be complementary or a source of friction.`,
+  };
+
+  return ASPECTS_META.map(m => ({ ...m, score: scores[m.key], text: texts[m.key] }));
+}
+
+function buildTagline(score, lang) {
+  if (lang === 'tr') {
+    if (score >= 85) return 'Olağanüstü uyum — nadir ve güçlü bir bağ.';
+    if (score >= 75) return 'Güçlü uyum — doğal bir tamamlayıcılık var.';
+    if (score >= 65) return 'İyi uyum — çabayla çok ileri gidebilir.';
+    if (score >= 55) return 'Orta düzey uyum — farkları yönetmek gerekir.';
+    if (score >= 45) return 'Zorlu ama mümkün — büyük çaba gerektirir.';
+    return 'Karmaşık bir eşleşme — derin anlaşılma şart.';
+  } else {
+    if (score >= 85) return 'Exceptional match — a rare and powerful bond.';
+    if (score >= 75) return 'Strong compatibility — natural complementarity.';
+    if (score >= 65) return 'Good match — can go far with mutual effort.';
+    if (score >= 55) return 'Moderate compatibility — differences must be managed.';
+    if (score >= 45) return 'Challenging but possible — requires significant effort.';
+    return 'Complex pairing — deep mutual understanding is essential.';
+  }
+}
+
+function buildProsCons(a, b, lang) {
+  const aL = a.split('');
+  const bL = b.split('');
+  const tfComp = aL[2] !== bL[2];
+  const sameN = aL[1] === bL[1] && aL[1] === 'N';
+  const sameJ = aL[3] === bL[3] && aL[3] === 'J';
+  const eiComp = aL[0] !== bL[0];
+  const bothT = aL[2] === bL[2] && aL[2] === 'T';
+
+  const p = lang === 'tr' ? [
+    sameN && 'Paylaşılan entelektüel merak ve soyut düşünce',
+    tfComp && 'Düşünce-duygu dengesi: mantık ve empati birlikte',
+    sameJ && 'Ortak yaşam tarzı: planlı, düzenli ve kararlı',
+    eiComp && 'E-I tamamlayıcılığı: sosyal ve derinlikli denge',
+    'Güçlü kişisel değerlere sahip iki birey',
+    bothT && 'Nesnel problem çözme ve entelektüel güven',
+  ].filter(Boolean) : [
+    sameN && 'Shared intellectual curiosity and abstract thinking',
+    tfComp && 'Thinking-feeling balance: logic and empathy together',
+    sameJ && 'Aligned lifestyle: planned, organized and decisive',
+    eiComp && 'E-I complementarity: social energy and depth balanced',
+    'Two individuals with strong personal values',
+    bothT && 'Objective problem-solving and intellectual trust',
+  ].filter(Boolean);
+
+  const c = lang === 'tr' ? [
+    !sameN && 'Farklı düşünce stilleri: somut vs soyut',
+    !sameJ && 'Farklı yaşam temposu: planlı vs spontane',
+    !tfComp && bothT && 'Duygusal bağ için bilinçli çaba gerekir',
+    !eiComp && aL[0]==='I' && 'Her ikisi de içedönük — sosyal izolasyon riski',
+    a === b && 'Aynı tip: körlük noktaları çakışabilir',
+    !sameN && !sameJ && 'Hem dünya görüşü hem yaşam tarzı farklılaşıyor',
+  ].filter(Boolean) : [
+    !sameN && 'Different thinking styles: concrete vs abstract',
+    !sameJ && 'Different life rhythms: planned vs spontaneous',
+    !tfComp && bothT && 'Emotional connection requires deliberate effort',
+    !eiComp && aL[0]==='I' && 'Both introverted — risk of social isolation',
+    a === b && 'Same type: blind spots may overlap',
+    !sameN && !sameJ && 'Both worldview and lifestyle diverge',
+  ].filter(Boolean);
+
+  return { pros: p.slice(0,4), cons: c.slice(0,4) };
+}
+
+function buildAdvice(a, b, lang) {
+  const aL = a.split('');
+  const bL = b.split('');
+  const tfComp = aL[2] !== bL[2];
+  const sameJ = aL[3] === bL[3];
+  const sameN = aL[1] === bL[1] && aL[1] === 'N';
+
+  if (lang === 'tr') {
+    let advice = `${a} ve ${b} bir arada güçlü bir bütün oluşturabilir. `;
+    if (tfComp) advice += `T-F tamamlayıcılığı sayesinde birbirinizin eksiklerini kapatıyorsunuz; ancak T partnerin zaman zaman daha fazla empati göstermesi, F partnerin ise eleştiriyi kişisel almamayı öğrenmesi ilişkiyi besler. `;
+    if (!sameJ) advice += `Yaşam tarzı farklarını açıkça konuşun: J partner kendini baskı altında, P partner kısıtlanmış hissedebilir. Birlikte "hibrit" bir rutin oluşturun. `;
+    if (!sameN) advice += `Biri somut, biri soyut düşündüğünde sabır şart. Her iletişimde karşınızdakinin bakış açısını anlamak için fazladan bir adım atın. `;
+    advice += `İki güçlü kişilik olarak egolarınızın çatışmasına izin vermeyin; zafer değil, anlayış peşinde koşun.`;
+    return advice;
+  } else {
+    let advice = `${a} and ${b} can form a powerful whole together. `;
+    if (tfComp) advice += `The T-F complementarity means you cover each other's blind spots — but the T partner should practice showing empathy more often, while the F partner should learn not to take criticism personally. `;
+    if (!sameJ) advice += `Discuss lifestyle differences openly: the J partner may feel pressured, the P partner may feel constrained. Build a "hybrid" routine together. `;
+    if (!sameN) advice += `When one thinks concretely and the other abstractly, patience is essential. Make the extra step to truly understand each other's perspective. `;
+    advice += `As two strong personalities, don't let your egos clash — pursue understanding, not victory.`;
+    return advice;
+  }
+}
+
+function getScoreColor(score) {
+  if (score >= 80) return '#7a9e5a';
+  if (score >= 65) return '#c07840';
+  if (score >= 50) return '#c05a7a';
+  return '#8a5a5a';
+}
+
+async function analyzeMatch() {
+  const a = document.getElementById('typeA').value;
+  const b = document.getElementById('typeB').value;
+
+  document.getElementById('matchResult').classList.remove('visible');
+  document.getElementById('loadingMatch').classList.add('visible');
+
+  // Simulate brief analysis delay for UX
+  await new Promise(r => setTimeout(r, 700));
+
+  document.getElementById('loadingMatch').classList.remove('visible');
+  renderMatchResult(a, b, genderA, genderB);
+  document.getElementById('matchResult').classList.add('visible');
+  document.getElementById('matchResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderMatchResult(a, b, ga, gb) {
+  const colorMap = { E:'#4a7c8a', I:'#7a6aaa', S:'#7a9e5a', N:'#c07840', T:'#5a6a8a', F:'#c05a7a', J:'#6a8a6a', P:'#a07040' };
+  const gLabel = { m: { tr:'Erkek', en:'Male' }, f: { tr:'Kadın', en:'Female' }, n: { tr:'', en:'' } };
+  const aData = TYPES[a][lang];
+  const bData = TYPES[b][lang];
+
+  // Badges
+  const mkBadge = (type) => type.split('').map(l =>
+    `<div class="tl" style="background:${colorMap[l]};width:24px;height:24px;border-radius:5px;font-size:12px">${l}</div>`).join('');
+  document.getElementById('compatBadgeA').innerHTML = mkBadge(a);
+  document.getElementById('compatBadgeB').innerHTML = mkBadge(b);
+
+  const gaL = gLabel[ga][lang];
+  const gbL = gLabel[gb][lang];
+  document.getElementById('compatNameA').textContent = `${a} ${aData.name}${gaL ? ' · '+gaL : ''}`;
+  document.getElementById('compatNameB').textContent = `${b} ${bData.name}${gbL ? ' · '+gbL : ''}`;
+
+  // Overall score
+  const score = calcCompatScore(a, b);
+  const scoreColor = getScoreColor(score);
+  document.getElementById('compatPct').textContent = score + '%';
+  document.getElementById('compatPct').style.color = scoreColor;
+  document.getElementById('compatBar').style.width = score + '%';
+  document.getElementById('compatBar').style.background = scoreColor;
+  document.getElementById('compatTagline').textContent = buildTagline(score, lang);
+
+  // Aspects
+  const aspects = buildAspects(a, b, ga, gb, lang);
+  const grid = document.getElementById('aspectsGrid');
+  grid.innerHTML = '';
+  aspects.forEach(asp => {
+    const stars = Array.from({length:5}, (_,i) =>
+      `<div class="star ${i < asp.score ? 'on' : 'off'}"></div>`).join('');
+    const card = document.createElement('div');
+    card.className = 'aspect-card';
+    card.innerHTML = `
+      <div class="aspect-icon">${asp.icon}</div>
+      <div class="aspect-name">${asp[lang]}</div>
+      <div class="aspect-stars">${stars}</div>
+      <div class="aspect-text">${asp.text}</div>`;
+    grid.appendChild(card);
+  });
+
+  // Pros / Cons
+  const { pros, cons } = buildProsCons(a, b, lang);
+  document.getElementById('prosList').innerHTML = pros.map(p => `<li>${p}</li>`).join('');
+  document.getElementById('consList').innerHTML = cons.map(c => `<li>${c}</li>`).join('');
+
+  // Advice
+  document.getElementById('adviceText').textContent = buildAdvice(a, b, lang);
+}
+
+// init
+setLang('tr');
+</script>
+</body>
+</html>
